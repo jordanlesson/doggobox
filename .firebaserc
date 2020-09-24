@@ -1,0 +1,6 @@
+{
+  "projects": {
+    "default": "doggobox-clickfunnel",
+    "staging": "doggobox-clickfunnel"
+  }
+}

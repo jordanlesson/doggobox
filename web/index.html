@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="description" content="Get your DoggoBox for only $5 today!">
+
+  <!-- iOS meta tags & icons -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="doggobox">
+  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+  <script type="module" src="app.js" defer></script>
+
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png"/>
+
+  <title>DoggoBox</title>
+  <link rel="manifest" href="manifest.json">
+  
+</head>
+<body>
+  <!-- This script installs service_worker.js to provide PWA functionality to
+       application. For more information, see:
+       https://developers.google.com/web/fundamentals/primers/service-workers -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('flutter_service_worker.js');
+      });
+    }
+  </script>
+  
+  <!-- The core Firebase JS SDK is always required and must be listed first -->
+  
+  <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-firestore.js"></script>
+  <!-- TODO: Add SDKs for Firebase products that you want to use
+      https://firebase.google.com/docs/web/setup#available-libraries -->
+  <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-analytics.js"></script>
+
+  <script>
+    // Your web app's Firebase configuration
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    var firebaseConfig = {
+      apiKey: "AIzaSyA4ESGFKh_5CG81OovgSnMPV6KQhsyoGv4",
+      authDomain: "doggobox-clickfunnel.firebaseapp.com",
+      databaseURL: "https://doggobox-clickfunnel.firebaseio.com",
+      projectId: "doggobox-clickfunnel",
+      storageBucket: "doggobox-clickfunnel.appspot.com",
+      messagingSenderId: "944131409730",
+      appId: "1:944131409730:web:3d0cd91f05dccc2a422adb",
+      measurementId: "G-WCWFL36M0Q"
+    };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    firebase.analytics();
+  </script>
+  <script src="main.dart.js" type="application/javascript"></script>
+</body>
+</html>
