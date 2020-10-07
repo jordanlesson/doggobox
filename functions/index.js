@@ -29,6 +29,22 @@ exports.createStripeCustomer = functions.auth.user().onCreate(async (user) => {
 });
 
 /**
+ * When a user is created, create a Stripe customer object for them.
+ *
+ * @see https://stripe.com/docs/payments/save-and-reuse#web-create-customer
+ */
+exports.deleteStripeCustomer = functions.auth.user().onDelete(async (user) => {
+  
+  const customerData = await admin.firestore().doc(`customers/${user.uid}`).get();
+  const customerId = customerData.data().customer_id;
+
+  const customer = await stripe.customers.del(customerId);
+
+  await admin.firestore().collection('customers').doc(user.uid).delete();
+  return;
+});
+
+/**
  * When 3D Secure is performed, we need to reconfirm the payment
  * after authentication has been performed.
  *
@@ -44,7 +60,7 @@ exports.addCustomerDetails = functions.firestore
       address: {
         line1: customerInfo.address.line1,
         city: customerInfo.address.city,
-        country: "United States",
+        country: customerInfo.address.country,
         postal_code: customerInfo.address.postal_code,
         state: customerInfo.address.state
       },
@@ -52,7 +68,7 @@ exports.addCustomerDetails = functions.firestore
         address: {
           line1: customerInfo.address.line1,
           city: customerInfo.address.city,
-          country: "United States",
+          country: customerInfo.address.country,
           postal_code: customerInfo.address.postal_code,
           state: customerInfo.address.state
         },
@@ -135,6 +151,7 @@ exports.createStripePayment = functions.firestore
   .document('customers/{userId}/payments/{pushId}')
   .onCreate(async (snap, context) => {
     const { amount, currency, payment_method } = snap.data();
+    const applePay = snap.data().apple_pay;
     try {
       console.log(payment_method);
       // Look up the Stripe customer id.
@@ -142,16 +159,33 @@ exports.createStripePayment = functions.firestore
       // Create a charge using the pushId as the idempotency key
       // to protect against double charges.
       const idempotencyKey = context.params.pushId;
-      const payment = await stripe.paymentIntents.create(
-        {
+      var body;
+
+      if (applePay) {
+        body = {
+          amount,
+          currency,
+          customer,
+          payment_method,
+          metadata: {
+            integration_check: "accept_a_payment"
+          },
+          setup_future_usage: 'off_session',
+        }
+      } else {
+        body = {
           amount,
           currency,
           customer,
           payment_method,
           confirm: true,
           confirmation_method: 'automatic',
-          setup_future_usage: 'off_session',
-        },
+          
+        }
+      }
+
+      const payment = await stripe.paymentIntents.create(
+        body,
         { idempotencyKey }
       );
       // If the result is successful, write it back to the database.
@@ -164,6 +198,7 @@ exports.createStripePayment = functions.firestore
       await reportError(error, { user: context.params.userId });
     }
   });
+
 
 /**
  * When 3D Secure is performed, we need to reconfirm the payment

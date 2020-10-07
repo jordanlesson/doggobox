@@ -2,38 +2,55 @@ import 'package:doggobox/index.dart';
 
 class DoggoAppBar extends StatelessWidget implements PreferredSizeWidget {
   final int step;
+  final bool desktop;
 
   @override
   final Size preferredSize;
 
   DoggoAppBar({
     this.step,
+    this.desktop,
     this.preferredSize,
   });
 
   Widget _buildLeading() {
-    return Container(
-      child: Text(
-        step != 4 ? "Step $step of 4" : "Last Step",
-        style: TextStyle(
-          color: Colors.black.withOpacity(0.4),
-          fontSize: 14.0,
-          fontWeight: FontWeight.w500,
-        ),
-      ),
-    );
+    return desktop
+        ? Padding(
+            padding: EdgeInsets.only(left: 56.0),
+            child: Container(
+              width: 201.0,
+              child: Image(
+                image: AssetImage(
+                  "assets/doggo_shop_logo_2x.png",
+                ),
+                fit: BoxFit.cover,
+              ),
+            ),
+          )
+        : Container(
+            child: Text(
+              step != 4 ? "Step $step of 4" : "Last Step",
+              style: TextStyle(
+                color: Colors.black.withOpacity(0.4),
+                fontSize: 14.0,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          );
   }
 
   Widget _buildTitle() {
     return Container(
       // height: 39.0,
       width: 105.23,
-      child: Image(
-        image: AssetImage(
-          "assets/doggo_shop_logo_2x.png",
-        ),
-        fit: BoxFit.cover,
-      ),
+      child: desktop
+          ? Container()
+          : Image(
+              image: AssetImage(
+                "assets/doggo_shop_logo_2x.png",
+              ),
+              fit: BoxFit.cover,
+            ),
     );
   }
 
@@ -50,6 +67,26 @@ class DoggoAppBar extends StatelessWidget implements PreferredSizeWidget {
     );
   }
 
+  Widget _buildStepCounter() {
+    return desktop
+        ? Container(
+            padding: EdgeInsets.only(
+              left: 56.0,
+              top: 20.0,
+            ),
+            alignment: Alignment.topLeft,
+            child: Text(
+              step != 4 ? "Step $step of 4" : "Last Step",
+              style: TextStyle(
+                color: Colors.black.withOpacity(0.4),
+                fontSize: 18.0,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          )
+        : Container();
+  }
+
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
@@ -57,13 +94,15 @@ class DoggoAppBar extends StatelessWidget implements PreferredSizeWidget {
     return PreferredSize(
       preferredSize: preferredSize,
       child: Container(
-        height: 75.0,
+        height: 135.0,
         color: Colors.white,
         child: Column(
           children: [
             Expanded(
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                mainAxisAlignment: desktop
+                    ? MainAxisAlignment.start
+                    : MainAxisAlignment.spaceEvenly,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   _buildLeading(),
@@ -96,6 +135,7 @@ class DoggoAppBar extends StatelessWidget implements PreferredSizeWidget {
                 ),
               ],
             ),
+            _buildStepCounter(),
           ],
         ),
       ),

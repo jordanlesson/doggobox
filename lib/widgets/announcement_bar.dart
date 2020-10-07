@@ -24,7 +24,7 @@ class AnnouncementBar extends StatelessWidget implements PreferredSizeWidget {
         child: Text(
           announcement,
           style: TextStyle(
-            fontSize: desktop ? 16.0 : 12.0,
+            fontSize: desktop ? 14.0 : 12.0,
             fontWeight: FontWeight.w600,
           ),
         ),

@@ -72,6 +72,7 @@ class FirebaseService {
           "currency": currency,
           "payment_method": paymentMethod.id,
           "status": "processing",
+          "apple_pay": false,
         },
       );
 
@@ -127,7 +128,7 @@ class FirebaseService {
           "address": {
             "line1": address.line1,
             "city": address.city,
-            "country": "United States",
+            "country": address.country,
             "postal_code": address.postalCode,
             "state": address.state,
           },
@@ -135,7 +136,7 @@ class FirebaseService {
             "address": {
               "line1": address.line1,
               "city": address.city,
-              "country": "United States",
+              "country": address.country,
               "postal_code": address.postalCode,
               "state": address.state,
             },

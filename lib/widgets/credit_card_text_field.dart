@@ -157,7 +157,7 @@ class _CreditCardTextFieldState extends State<CreditCardTextField> {
   Widget build(BuildContext context) {
     return Container(
       height: 100.0,
-      constraints: BoxConstraints(maxWidth: 350.0),
+      //constraints: BoxConstraints(maxWidth: 350.0),
       alignment: Alignment.topLeft,
       decoration: BoxDecoration(
         color: Colors.white,

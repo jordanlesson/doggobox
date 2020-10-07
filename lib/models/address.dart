@@ -40,10 +40,18 @@ class Address {
     return state.length >= 2;
   }
 
+  bool isCountryValid() {
+    if (country == null) {
+      return false;
+    }
+    return country.length >= 2;
+  }
+
   bool isAddressInfoValid() {
     return this.isLine1Valid() &&
         this.isCityValid() &&
         this.isPostalCodeValid() &&
-        this.isStateValid();
+        this.isStateValid() &&
+        this.isCountryValid();
   }
 }

@@ -41,6 +41,7 @@ dependencies:
   firebase_auth: ^0.18.0+1
   cloud_firestore: ^0.14.0+2
   url_launcher: ^5.5.3
+  js: ^0.6.2
 
 dev_dependencies:
   flutter_test:
@@ -51,7 +52,10 @@ dev_dependencies:
 
 # The following section is specific to Flutter.
 flutter:
-
+  fonts:
+    - family: SF Pro
+      fonts:
+        - asset: fonts/SF-Pro.ttf
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
@@ -59,6 +63,9 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
+    - assets/apple_pay.png
+    - assets/apple_pay_2x.png
+    - assets/apple_pay_3x.png
     - assets/dog_holding_toy.png
     - assets/dog_holding_toy_2x.png
     - assets/dog_holding_toy_3x.png
@@ -74,9 +81,15 @@ flutter:
     - assets/dog_and_box.png
     - assets/dog_and_box_2x.png
     - assets/dog_and_box_3x.png
+    - assets/dog_and_box_desktop.png
+    - assets/dog_and_box_desktop_2x.png
+    - assets/dog_and_box_desktop_3x.png
     - assets/badge.png
     - assets/badge_2x.png
     - assets/badge_3x.png
+    - assets/badge_desktop.png
+    - assets/badge_desktop_2x.png
+    - assets/badge_desktop_3x.png
     - assets/dog_chewing_toy.png
     - assets/dog_chewing_toy_2x.png
     - assets/dog_chewing_toy_3x.png
@@ -121,7 +134,6 @@ flutter:
     - assets/dog_water_bottle_2_3x.png
     - assets/dogs_excited.gif
     - assets/dog_drinking_water.mov
-
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

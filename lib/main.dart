@@ -1,3 +1,5 @@
+import 'package:doggobox/pages/desktop/credit_card_page.dart';
+import 'package:doggobox/view_controller.dart';
 import 'index.dart';
 
 void main() {
@@ -9,7 +11,7 @@ class DoggoBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Get your DoggoBox for only \$5',
+      title: 'Get your DoggoBox for only \$1',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         accentColor: Color.fromRGBO(35, 193, 255, 0.25),

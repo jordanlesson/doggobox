@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
@@ -10,16 +11,16 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <meta name="apple-mobile-web-app-title" content="doggobox">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
-  <script type="module" src="app.js" defer></script>
 
 
   <!-- Favicon -->
-  <link rel="icon" type="image/png" href="favicon.png"/>
+  <link rel="icon" type="image/png" href="favicon.png" />
 
   <title>DoggoBox</title>
   <link rel="manifest" href="manifest.json">
-  
+
 </head>
+
 <body>
   <!-- This script installs service_worker.js to provide PWA functionality to
        application. For more information, see:
@@ -31,16 +32,16 @@
       });
     }
   </script>
-  
+
   <!-- The core Firebase JS SDK is always required and must be listed first -->
-  
+
   <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-firestore.js"></script>
   <!-- TODO: Add SDKs for Firebase products that you want to use
       https://firebase.google.com/docs/web/setup#available-libraries -->
   <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-analytics.js"></script>
-
+  <script src="https://js.stripe.com/v3/"></script>
   <script>
     // Your web app's Firebase configuration
     // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -57,7 +58,222 @@
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     firebase.analytics();
+
+    var stripe = Stripe('pk_live_51HHg6zAkuXi8ixMu9LOJ72dupcUqRN1wKb83qQHMAYi2Xn2kJOpiC8VUonKPLmXgW0bTVvuL9xcmGoHv5WtPk1zO00gE1BGg54', {
+      apiVersion: "2020-08-27",
+    });
+
+    function createPaymentRequest() {
+      console.log("Payment Request Creation Initiated");
+      var paymentRequest = stripe.paymentRequest({
+        country: 'US',
+        currency: 'usd',
+        total: {
+          label: 'DoggoBox',
+          amount: 100,
+        },
+        requestPayerName: true,
+        requestShipping: true,
+        shippingOptions: [
+          // The first shipping option in this list appears as the default
+          // option in the browser payment interface.
+          {
+            id: 'free-shipping',
+            label: 'Free shipping',
+            detail: 'Arrives in a few weeks',
+            amount: 0,
+          },
+        ],
+      });
+
+      return paymentRequest;
+    }
+
+    async function canMakePayment(paymentRequest) {
+      var result = await paymentRequest.canMakePayment();
+    }
+
+    async function isApplePayAvailable() {
+      var paymentRequest = stripe.paymentRequest({
+        country: 'US',
+        currency: 'usd',
+        total: {
+          label: 'DoggoBox',
+          amount: 100,
+        },
+        requestPayerName: true,
+        requestShipping: true,
+        shippingOptions: [
+          // The first shipping option in this list appears as the default
+          // option in the browser payment interface.
+          {
+            id: 'free-shipping',
+            label: 'Free shipping',
+            detail: 'Arrives in a few weeks',
+            amount: 0,
+          },
+        ],
+      });
+
+      var result = await paymentRequest.canMakePayment();
+      console.log(`Apple Pay Available: ${result.applePay}`);
+      return result.applePay;
+
+    }
+
+    // Delay function for retrieving payment
+    const delay = ms => new Promise(res => setTimeout(res, ms));
+
+    async function createPayment(userId, amount, currency, paymentMethodId) {
+      try {
+
+        const body = {
+          amount: amount,
+          currency: currency,
+          payment_method: paymentMethodId,
+          status: "processing",
+          apple_pay: true
+        };
+
+        const paymentRef = await firebase.firestore().collection(`customers/${userId}/payments/`).add(body);
+
+        console.log(`Payment Created: ${paymentRef.id}`);
+        console.log("Listening to payment on Firestore");
+
+        var payment = body;
+
+        checkCount = 0;
+
+        while (payment.status == "processing") {
+          await delay(1500);
+          const paymentData = await paymentRef.get();
+          payment = paymentData.data();
+          console.log(payment);
+
+          if (payment.status == "succeeded") {
+            break;
+          } else if (payment.status == "canceled" || checkCount >= 15) {
+            payment = null
+            break;
+          }
+
+          checkCount++;
+
+        }
+
+        return payment;
+
+      } catch (error) {
+        console.log(`Failed to create payment: ${error}`);
+        return null;
+      }
+    }
+
+    async function createPaymentMethod(userId, paymentMethodId) {
+      try {
+        const customerId = (await firebase.firestore().doc(`customers/${userId}`).get()).data().customer_id;
+
+        body = {
+          id: paymentMethodId,
+          customer_id: customerId
+        };
+
+        await firebase.firestore().doc(`customers/${userId}/payment_methods/${paymentMethodId}`).set(body);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    async function updateCustomerDetails(userId, paymentMethod) {
+      try {
+        await firebase.firestore().doc(`customers/${userId}`).set(paymentMethod.billing_details, { merge: true });
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    async function onApplePayPressed(userId, paymentRequest, onPaymentCompleted) {
+      paymentRequest.show();
+      try {
+
+        console.log("Yes It Can");
+
+        console.log("This Browser Supports Apple Pay");
+
+        paymentRequest.on('paymentmethod', async (ev) => {
+          console.log(`Payment Method Created: ${ev.paymentMethod.id}`);
+
+          var payment = await createPayment(userId, 100, "usd", ev.paymentMethod.id);
+
+          if (payment != null) {
+            console.log(`Payment Intent Created: ${payment.id}`);
+
+            console.log(`Payment Intent Created on Stripe: ${payment}`);
+            // Confirm the PaymentIntent without handling potential next actions (yet).
+            stripe.confirmCardPayment(
+              payment.client_secret,
+              { payment_method: ev.paymentMethod.id },
+              { handleActions: false }
+            ).then(async function (confirmResult) {
+              console.log(`Confirmation Error: ${confirmResult.error}`);
+              if (!confirmResult.error) {
+                console.log("Apple Pay Transation Status: Success");
+                // Report to the browser that the confirmation was successful, prompting
+                // it to close the browser payment method collection interface.
+
+                // Check if the PaymentIntent requires any actions and if so let Stripe.js
+                // handle the flow. If using an API version older than "2019-02-11" instead
+                // instead check for: `paymentIntent.status === "requires_source_action"`.
+                if (confirmResult.paymentIntent.status === "requires_action") {
+                  console.log("Apple Pay Transation Status: Needs Actions");
+                  // Let Stripe.js handle the rest of the payment flow.
+                  stripe.confirmCardPayment(payment.client_secret).then(async function (result) {
+                    if (result.error) {
+                      // The payment failed -- ask your customer for a new payment method.
+                      paymentRequest.abort();
+                      ev.complete('fail');
+
+                    } else {
+                      // The payment has succeeded.
+                      onPaymentCompleted();
+                      await createPaymentMethod(userId, ev.paymentMethod.id);
+                      await updateCustomerDetails(userId, ev.paymentMethod);
+                      ev.complete('success');
+
+                    }
+                  });
+                } else {
+                  // The payment has succeeded.
+                  onPaymentCompleted();
+                  await createPaymentMethod(userId, ev.paymentMethod.id);
+                  await updateCustomerDetails(userId, ev.paymentMethod);
+                  ev.complete('success');
+
+                }
+              } else {
+                // Report to the browser that the payment failed, prompting it to
+                // re-show the payment interface, or show an error message and close
+                // the payment interface.
+                console.log("Apple Pay Transation Status: Failure");
+                ev.complete('fail');
+
+              }
+            });
+          } else {
+            ev, complete('fail');
+          }
+        });
+
+        console.log("Apple Payment Done");
+
+
+      } catch (error) {
+        console.log(`An Error Occurred: ${error}`);
+
+      }
+    }
   </script>
   <script src="main.dart.js" type="application/javascript"></script>
 </body>
+
 </html>
