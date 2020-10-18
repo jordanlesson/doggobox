@@ -371,12 +371,17 @@ class _CreditCardPageMobileState extends State<CreditCardPageMobile> {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) {
-          return new WillPopScope(
+          return WillPopScope(
             onWillPop: () async {
               return false;
             },
-            child: OneTimeOfferPageMobile(
-              user: widget.user,
+            child: ViewController(
+              mobilePage: OneTimeOfferPageMobile(
+                user: widget.user,
+              ),
+              desktopPage: OneTimeOfferPageDesktop(
+                user: widget.user,
+              ),
             ),
           );
         },

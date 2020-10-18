@@ -2,7 +2,7 @@ import 'package:doggobox/index.dart';
 
 class OneTimeOfferPageMobile extends StatefulWidget {
   final User user;
-  static const String route = '/oto';
+
   OneTimeOfferPageMobile({
     @required this.user,
   });
@@ -105,9 +105,20 @@ class _OneTimeOfferPageMobileState extends State<OneTimeOfferPageMobile> {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) {
-          return AnimalShelterUpsellPageMobile(
-            cart: cart,
-            user: widget.user,
+          return WillPopScope(
+            onWillPop: () async {
+              return false;
+            },
+            child: ViewController(
+              mobilePage: AnimalShelterUpsellPageMobile(
+                cart: cart,
+                user: widget.user,
+              ),
+              desktopPage: AnimalShelterUpsellPageMobile(
+                cart: cart,
+                user: widget.user,
+              ),
+            ),
           );
         },
       ),
@@ -122,6 +133,7 @@ class _OneTimeOfferPageMobileState extends State<OneTimeOfferPageMobile> {
       details:
           "Get the small, squishy, fluffy toy best suited for small doggos with little chompers and chewers every month. Not to mention the cutest little toys like tiny fruit themed toys. These are pawfect for little puppers and Doggos that don't need the big doggo chews. Add this box to your order for only \$19.99 a month. We will ship it to you with FREE SHIPPING. Not to mention you get only the best toys for your little doggo!",
       buttonText: "Yes! Continue to get the Small DoggoBox each month ",
+      desktop: false,
       onButtonPressed: () {
         cart.add(SmallDoggoBox());
         _navigateToNextStep();
@@ -137,6 +149,7 @@ class _OneTimeOfferPageMobileState extends State<OneTimeOfferPageMobile> {
       details:
           "Get the harder, stronger, toys designed by us and tested by our dogs to stand up to the toughest chewers. Made with strong rubber and nylon, these toys were made for chompin’.. Each is part of a themed collection of super-tough toys,. These are pawfect for big puppers and Doggos! This DoggoBox is best suited for larger doggos with bigger chompers and chewers delivered to you every month. Add this box to your order for only \$24.99 a month. We will ship it to you with FREE SHIPPING. Not to mention you get only the best toys for your little doggo!",
       buttonText: "Yes! Continue to get the Big DoggoBox each month ",
+      desktop: false,
       onButtonPressed: () {
         cart.add(BigDoggoBox());
         _navigateToNextStep();
@@ -149,6 +162,7 @@ class _OneTimeOfferPageMobileState extends State<OneTimeOfferPageMobile> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: DoggoAppBar(
+        desktop: false,
         preferredSize: Size.fromHeight(75.0),
         step: 3,
       ),

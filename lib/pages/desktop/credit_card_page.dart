@@ -35,6 +35,23 @@ class _CreditCardPageDesktopState extends State<CreditCardPageDesktop> {
     _address = Address();
   }
 
+  Widget _buildStepCounter() {
+    return Container(
+      padding: EdgeInsets.only(
+        top: 20.0,
+      ),
+      alignment: Alignment.topLeft,
+      child: Text(
+        "Step 2 of 4",
+        style: TextStyle(
+          color: Colors.black.withOpacity(0.4),
+          fontSize: 18.0,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+    );
+  }
+
   Widget _buildOffer() {
     return Container(
       padding: EdgeInsets.only(
@@ -72,11 +89,26 @@ class _CreditCardPageDesktopState extends State<CreditCardPageDesktop> {
     return Container(
       //height: 593.0,
       //color: Colors.green,
+      constraints: BoxConstraints(maxWidth: 500.0),
       alignment: Alignment.topCenter,
       child: Image(
         image: AssetImage(
           "assets/doggo_box_contents_3x.png",
         ),
+      ),
+    );
+  }
+
+  Widget _buildBadge() {
+    return Container(
+      alignment: Alignment.centerLeft,
+      //color: Colors.green,
+      constraints: BoxConstraints(
+        maxWidth: 432.0,
+      ),
+      padding: EdgeInsets.symmetric(vertical: 25.0),
+      child: Image(
+        image: AssetImage("assets/badge_desktop_2x.png"),
       ),
     );
   }
@@ -328,7 +360,12 @@ class _CreditCardPageDesktopState extends State<CreditCardPageDesktop> {
                 enabled: formIsValid && response.message != "loading",
                 text: "⚡️Claim Your DoggoBox Now⚡️",
                 onPressed: () => _checkOutBloc.onDoggoBoxPurchased(
-                    context, widget.user, _customer, _card, _address),
+                  context,
+                  widget.user,
+                  _customer,
+                  _card,
+                  _address,
+                ),
               );
             },
           );
@@ -337,16 +374,48 @@ class _CreditCardPageDesktopState extends State<CreditCardPageDesktop> {
     );
   }
 
+  Widget _buildSecurityNote() {
+    return Container(
+      padding: EdgeInsets.only(top: 15.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.lock_rounded,
+            color: Colors.black.withOpacity(0.4),
+            size: 18.0,
+          ),
+          Container(
+            width: 5.0,
+          ),
+          Text(
+            "Your information is secure and encrypted",
+            style: TextStyle(
+              color: Colors.black.withOpacity(0.4),
+              fontSize: 18.0,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   void _navigateToNextStep() {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) {
-          return new WillPopScope(
+          return WillPopScope(
             onWillPop: () async {
               return false;
             },
-            child: OneTimeOfferPageMobile(
-              user: widget.user,
+            child: ViewController(
+              mobilePage: OneTimeOfferPageMobile(
+                user: widget.user,
+              ),
+              desktopPage: OneTimeOfferPageDesktop(
+                user: widget.user,
+              ),
             ),
           );
         },
@@ -392,7 +461,7 @@ class _CreditCardPageDesktopState extends State<CreditCardPageDesktop> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: DoggoAppBar(
-        preferredSize: Size.fromHeight(135.0),
+        preferredSize: Size.fromHeight(100.0),
         desktop: true,
         step: 2,
       ),
@@ -415,8 +484,10 @@ class _CreditCardPageDesktopState extends State<CreditCardPageDesktop> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        _buildStepCounter(),
                         _buildOffer(),
                         _buildPromotionalImage(),
+                        _buildBadge(),
                       ],
                     ),
                   ),
@@ -424,7 +495,10 @@ class _CreditCardPageDesktopState extends State<CreditCardPageDesktop> {
                     flex: 4,
                     child: Container(
                       //color: Colors.pink,
-                      padding: EdgeInsets.symmetric(horizontal: 100.0),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 100.0,
+                        vertical: 50.0,
+                      ),
                       alignment: Alignment.topCenter,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
@@ -463,6 +537,7 @@ class _CreditCardPageDesktopState extends State<CreditCardPageDesktop> {
                             ),
                           ),
                           _buildButton(),
+                          _buildSecurityNote(),
                         ],
                       ),
                     ),

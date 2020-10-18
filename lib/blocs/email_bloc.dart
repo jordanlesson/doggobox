@@ -24,9 +24,14 @@ class EmailBloc extends BlocBase {
 
     if (authResponse.success) {
       Navigator.of(context).push(
-        MaterialPageRoute(builder: (BuildContext context) {
-          return CreditCardPageMobile(user: authResponse.user);
-        }),
+        MaterialPageRoute(
+          builder: (BuildContext context) {
+            return ViewController(
+              mobilePage: CreditCardPageMobile(user: authResponse.user),
+              desktopPage: CreditCardPageDesktop(user: authResponse.user),
+            );
+          },
+        ),
       );
     } else {
       emailSink.add(Validators.isEmailValid(email));

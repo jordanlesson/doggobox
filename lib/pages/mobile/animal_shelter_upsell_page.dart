@@ -101,6 +101,7 @@ class _AnimalShelterUpsellPageMobileState
                   "Add this box to your order for only \$19.99 a month and we will send food, treats and toys for our the doggos that need it most every month.",
               buttonText:
                   "Yes! Send a DoggoBox to an Animal Shelter each month ",
+              desktop: false,
               onButtonPressed: () {
                 cart.add(AnimalShelterDoggoBox());
                 _navigateToNextStep();
@@ -270,14 +271,21 @@ class _AnimalShelterUpsellPageMobileState
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) {
-          return new WillPopScope(
-              onWillPop: () async {
-                return false;
-              },
-              child: WaterBottleUpsellPageMobile(
+          return WillPopScope(
+            onWillPop: () async {
+              return false;
+            },
+            child: ViewController(
+              mobilePage: WaterBottleUpsellPageMobile(
                 cart: cart,
                 user: widget.user,
-              ));
+              ),
+              desktopPage: WaterBottleUpsellPageDesktop(
+                cart: cart,
+                user: widget.user,
+              ),
+            ),
+          );
         },
       ),
     );
@@ -291,6 +299,7 @@ class _AnimalShelterUpsellPageMobileState
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: DoggoAppBar(
+        desktop: false,
         preferredSize: Size.fromHeight(75.0),
         step: 3,
       ),

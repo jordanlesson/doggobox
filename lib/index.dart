@@ -22,14 +22,21 @@ export 'package:doggobox/blocs/check_out_bloc.dart';
 export 'package:doggobox/blocs/customer_bloc.dart';
 export 'package:doggobox/blocs/shopping_cart_bloc.dart';
 
-// Pages
-export 'package:doggobox/pages/desktop/squeeze_page.dart';
+// Mobile Pages
 export 'package:doggobox/pages/mobile/squeeze_page.dart';
 export 'package:doggobox/pages/mobile/credit_card_page.dart';
 export 'package:doggobox/pages/mobile/one_time_offer_page.dart';
 export 'package:doggobox/pages/mobile/animal_shelter_upsell_page.dart';
 export 'package:doggobox/pages/mobile/water_bottle_upsell_page.dart';
 export 'package:doggobox/pages/mobile/order_confirmation_page.dart';
+
+// Desktop Pages
+export 'package:doggobox/pages/desktop/squeeze_page.dart';
+export 'package:doggobox/pages/desktop/credit_card_page.dart';
+export 'package:doggobox/pages/desktop/one_time_offer_page.dart';
+export 'package:doggobox/pages/desktop/animal_shelter_upsell_page.dart';
+export 'package:doggobox/pages/desktop/water_bottle_upsell_page.dart';
+export 'package:doggobox/pages/desktop/order_confirmation_page.dart';
 
 // Widgets
 export 'package:doggobox/widgets/announcement_bar.dart';
@@ -75,3 +82,4 @@ export 'package:doggobox/javascript_controller.dart';
 export 'package:doggobox/routing/route_names.dart';
 export 'package:doggobox/routing/router.dart';
 export 'package:doggobox/routing/screen_arguments.dart';
+export 'package:doggobox/view_controller.dart';

@@ -1,6 +1,5 @@
-import 'package:doggobox/pages/desktop/credit_card_page.dart';
-import 'package:doggobox/view_controller.dart';
 import 'index.dart';
+import 'package:doggobox/view_controller.dart';
 
 void main() {
   runApp(DoggoBox());
@@ -16,8 +15,8 @@ class DoggoBox extends StatelessWidget {
       theme: ThemeData(
         accentColor: Color.fromRGBO(35, 193, 255, 0.25),
         fontFamily: "Poppins",
-        cursorColor: Color.fromRGBO(35, 193, 255, 0.25),
         visualDensity: VisualDensity.adaptivePlatformDensity,
+        buttonColor: Color(0xFF23C1FF),
         textTheme: TextTheme(
           headline1: TextStyle(
             color: Colors.black,
@@ -35,9 +34,17 @@ class DoggoBox extends StatelessWidget {
             fontSize: 14.0,
             fontWeight: FontWeight.w400,
           ),
+          button: TextStyle(
+            color: Colors.white,
+            fontSize: 24.0,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
-      home: SqueezePageMobile(),
+      home: ViewController(
+        desktopPage: OrderConfirmationPageDesktop(),
+        mobilePage: OrderConfirmationPageMobile(),
+      ),
     );
   }
 }

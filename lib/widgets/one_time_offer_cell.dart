@@ -7,6 +7,7 @@ class OneTimeOfferCell extends StatelessWidget {
   final String details;
   final String buttonText;
   final VoidCallback onButtonPressed;
+  bool desktop;
 
   OneTimeOfferCell({
     @required this.imagePath,
@@ -15,11 +16,12 @@ class OneTimeOfferCell extends StatelessWidget {
     @required this.details,
     @required this.buttonText,
     @required this.onButtonPressed,
-  });
+    @required this.desktop,
+  }) : assert(desktop != null, "Desktop bool cannot be null");
 
   Widget _buildImage() {
     return Container(
-      height: 175.0,
+      height: desktop ? 316.0 : 175.0,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10.0),
         image: DecorationImage(
@@ -33,11 +35,12 @@ class OneTimeOfferCell extends StatelessWidget {
   Widget _buildTitle() {
     return Container(
       padding: EdgeInsets.all(10.0),
+      alignment: Alignment.centerLeft,
       child: Text(
         title,
         style: TextStyle(
           color: Colors.black,
-          fontSize: 26.0,
+          fontSize: desktop ? 35.0 : 26.0,
           fontWeight: FontWeight.w600,
           height: 1.2,
         ),
@@ -58,7 +61,7 @@ class OneTimeOfferCell extends StatelessWidget {
         subtitle,
         style: TextStyle(
           color: Colors.black,
-          fontSize: 14.0,
+          fontSize: desktop ? 24.0 : 14.0,
           fontWeight: FontWeight.w400,
         ),
       ),
@@ -72,7 +75,7 @@ class OneTimeOfferCell extends StatelessWidget {
 
   Widget _buildDetails() {
     return Container(
-      padding: EdgeInsets.only(top: 10.0),
+      padding: EdgeInsets.only(top: desktop ? 20.0 : 10.0),
       child: Text(
         details,
         style: TextStyle(

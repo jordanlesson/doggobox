@@ -296,11 +296,14 @@ class _WaterBottleUpsellPageMobileState
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) {
-          return new WillPopScope(
+          return WillPopScope(
             onWillPop: () async {
               return false;
             },
-            child: OrderConfirmationPageMobile(),
+            child: ViewController(
+              mobilePage: OrderConfirmationPageMobile(),
+              desktopPage: OrderConfirmationPageDesktop(),
+            ),
           );
         },
       ),
@@ -314,6 +317,7 @@ class _WaterBottleUpsellPageMobileState
       appBar: DoggoAppBar(
         preferredSize: Size.fromHeight(75.0),
         step: 4,
+        desktop: false,
       ),
       body: BlocProvider<ShoppingCartBloc>(
         bloc: shoppingCartBloc,

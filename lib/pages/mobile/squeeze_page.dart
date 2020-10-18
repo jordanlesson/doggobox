@@ -15,6 +15,7 @@ class _SqueezePageMobileState extends State<SqueezePageMobile> {
   @override
   void initState() {
     super.initState();
+    _email = "";
     emailBloc = EmailBloc();
     emailFocusNode = FocusNode();
     scrollController = ScrollController();
@@ -168,7 +169,7 @@ class _SqueezePageMobileState extends State<SqueezePageMobile> {
                   ),
                   onChanged: (String input) {
                     emailBloc.checkEmail(input.toLowerCase().trim());
-                    _email = input;
+                    _email = input.toLowerCase().trim();
                   },
                 ),
               ),
@@ -177,12 +178,18 @@ class _SqueezePageMobileState extends State<SqueezePageMobile> {
                 initialData: false,
                 builder: (context, emailSnapshot) {
                   final bool enabled = emailSnapshot.data;
-                  return DoggoButton(
-                    text: "⚡️Claim Your DoggoBox Now⚡️",
-                    enabled: enabled,
-                    onPressed: () => emailBloc.onDoggoBoxClaimed(
-                        context, _email.toLowerCase()),
-                  );
+                  return _email.isEmpty
+                      ? DoggoButton(
+                          text: "⚡️Claim Your DoggoBox Now⚡️",
+                          enabled: true,
+                          onPressed: null,
+                        )
+                      : DoggoButton(
+                          text: "⚡️Claim Your DoggoBox Now⚡️",
+                          enabled: enabled,
+                          onPressed: () => emailBloc.onDoggoBoxClaimed(
+                              context, _email.toLowerCase()),
+                        );
                 },
               ),
             ],

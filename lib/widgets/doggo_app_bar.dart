@@ -9,7 +9,7 @@ class DoggoAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   DoggoAppBar({
     this.step,
-    this.desktop,
+    @required this.desktop,
     this.preferredSize,
   });
 
@@ -18,7 +18,7 @@ class DoggoAppBar extends StatelessWidget implements PreferredSizeWidget {
         ? Padding(
             padding: EdgeInsets.only(left: 56.0),
             child: Container(
-              width: 201.0,
+              width: 162.0,
               child: Image(
                 image: AssetImage(
                   "assets/doggo_shop_logo_2x.png",
@@ -94,7 +94,7 @@ class DoggoAppBar extends StatelessWidget implements PreferredSizeWidget {
     return PreferredSize(
       preferredSize: preferredSize,
       child: Container(
-        height: 135.0,
+        height: desktop ? 100.0 : 135.0,
         color: Colors.white,
         child: Column(
           children: [
@@ -135,7 +135,6 @@ class DoggoAppBar extends StatelessWidget implements PreferredSizeWidget {
                 ),
               ],
             ),
-            _buildStepCounter(),
           ],
         ),
       ),
