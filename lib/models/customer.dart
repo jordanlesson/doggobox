@@ -24,6 +24,6 @@ class Customer {
   });
 
   bool isNameValid() {
-    return name.length >= 2;
+    return name != null && name.length >= 2;
   }
 }

@@ -2,39 +2,64 @@ import 'package:doggobox/index.dart';
 
 class EmailBloc extends BlocBase {
   // STREAMS OF EMAIL TEXT FIELD
-  StreamController<bool> streamListController =
-      StreamController<bool>.broadcast();
+  StreamController<EmailResponse> streamListController =
+      StreamController<EmailResponse>.broadcast();
 
   // SINK
-  Sink<bool> get emailSink => streamListController.sink;
+  Sink<EmailResponse> get emailSink => streamListController.sink;
 
   // STREAM
-  Stream<bool> get emailStream => streamListController.stream;
+  Stream<EmailResponse> get emailStream => streamListController.stream;
 
   // FUNCTION TO CHECK WHETHER EMAIL IS VALID
   void checkEmail(String email) {
-    emailSink.add(Validators.isEmailValid(email));
+    emailSink.add(EmailResponse(
+      success: Validators.isEmailValid(email),
+      error: false,
+      user: null,
+      isLoading: false,
+    ));
   }
 
   void onDoggoBoxClaimed(BuildContext context, String email) async {
     // Makes button disabled to show loading
-    emailSink.add(false);
+    emailSink.add(EmailResponse(
+      user: null,
+      error: false,
+      success: false,
+      isLoading: true,
+    ));
 
-    FirebaseAuthResponse authResponse = await FirebaseService.createUser(email);
+    if (Validators.isEmailValid(email)) {
+      FirebaseAuthResponse authResponse =
+          await FirebaseService.createUser(email);
 
-    if (authResponse.success) {
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (BuildContext context) {
-            return ViewController(
-              mobilePage: CreditCardPageMobile(user: authResponse.user),
-              desktopPage: CreditCardPageDesktop(user: authResponse.user),
-            );
-          },
-        ),
-      );
+      if (authResponse.success) {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (BuildContext context) {
+              return ViewController(
+                mobilePage: CreditCardPageMobile(user: authResponse.user),
+                desktopPage: CreditCardPageDesktop(user: authResponse.user),
+              );
+            },
+          ),
+        );
+      } else {
+        emailSink.add(EmailResponse(
+          user: null,
+          success: false,
+          error: true,
+          isLoading: false,
+        ));
+      }
     } else {
-      emailSink.add(Validators.isEmailValid(email));
+      emailSink.add(EmailResponse(
+        user: null,
+        success: false,
+        error: true,
+        isLoading: false,
+      ));
     }
   }
 
@@ -43,4 +68,18 @@ class EmailBloc extends BlocBase {
   dispose() {
     streamListController.close();
   }
+}
+
+class EmailResponse {
+  User user;
+  bool error;
+  bool success;
+  bool isLoading;
+
+  EmailResponse({
+    this.user,
+    this.error,
+    this.success,
+    this.isLoading,
+  });
 }

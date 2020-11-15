@@ -15,6 +15,7 @@ export 'package:stripe_sdk/stripe_sdk.dart';
 export 'package:credit_card_number_validator/credit_card_number_validator.dart';
 export 'package:firebase_auth/firebase_auth.dart';
 export 'package:url_launcher/url_launcher.dart';
+export 'package:flutter_email_sender/flutter_email_sender.dart';
 
 // Blocs
 export 'package:doggobox/blocs/email_bloc.dart';
@@ -47,6 +48,8 @@ export 'package:doggobox/widgets/info_text_field.dart';
 export 'package:doggobox/widgets/doggo_button.dart';
 export 'package:doggobox/widgets/one_time_offer_cell.dart';
 export 'package:doggobox/widgets/one_time_offer_button.dart';
+export 'package:doggobox/widgets/doggo_box_claim_button.dart';
+export 'package:doggobox/widgets/footer.dart';
 
 // Providers
 export 'package:doggobox/providers/bloc_provider.dart';
@@ -63,12 +66,14 @@ export 'package:doggobox/models/product.dart';
 // Services
 export 'package:doggobox/services/payment_service.dart';
 export 'package:doggobox/services/database_service.dart';
+export 'package:doggobox/services/email_service.dart';
 
 // Transitions
 
 // Utilities
 export 'package:doggobox/utilities/validators.dart';
 export 'package:doggobox/utilities/formattors.dart';
+export 'package:doggobox/utilities/shapes.dart';
 
 // Javascript
 export 'dart:js_util';

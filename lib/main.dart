@@ -13,11 +13,20 @@ class DoggoBox extends StatelessWidget {
       title: 'Get your DoggoBox for only \$1',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
+        primaryColor: Color.fromRGBO(35, 193, 255, 1.0),
         accentColor: Color.fromRGBO(35, 193, 255, 0.25),
         fontFamily: "Poppins",
         visualDensity: VisualDensity.adaptivePlatformDensity,
         buttonColor: Color(0xFF23C1FF),
+        errorColor: Color(0xFFEE0004),
         textTheme: TextTheme(
+          // Error Text Style
+          overline: TextStyle(
+            color: Colors.white,
+            fontFamily: "Montserrat",
+            fontSize: 16.0,
+            fontWeight: FontWeight.w600,
+          ),
           headline1: TextStyle(
             color: Colors.black,
             fontSize: 35.0,
@@ -42,8 +51,8 @@ class DoggoBox extends StatelessWidget {
         ),
       ),
       home: ViewController(
-        desktopPage: OrderConfirmationPageDesktop(),
-        mobilePage: OrderConfirmationPageMobile(),
+        desktopPage: SqueezePageDesktop(),
+        mobilePage: SqueezePageMobile(),
       ),
     );
   }

@@ -10,6 +10,7 @@ class _OrderConfirmationPageDesktopState
     extends State<OrderConfirmationPageDesktop> {
   ConfettiController _controllerCenterLeft;
   ConfettiController _controllerCenterRight;
+  ConfettiController _controllerCenter;
 
   @override
   void initState() {
@@ -18,14 +19,18 @@ class _OrderConfirmationPageDesktopState
         ConfettiController(duration: const Duration(seconds: 2));
     _controllerCenterRight =
         ConfettiController(duration: const Duration(seconds: 2));
+    _controllerCenter =
+        ConfettiController(duration: const Duration(seconds: 2));
 
     _controllerCenterLeft..play();
+    _controllerCenter..play();
     _controllerCenterRight..play();
   }
 
   @override
   void dispose() {
     _controllerCenterRight.dispose();
+    _controllerCenter.dispose();
     _controllerCenterLeft.dispose();
     super.dispose();
   }
@@ -212,7 +217,7 @@ class _OrderConfirmationPageDesktopState
     return Align(
       alignment: Alignment.topCenter,
       child: ConfettiWidget(
-        confettiController: _controllerCenterRight,
+        confettiController: _controllerCenter,
         blastDirectionality: BlastDirectionality.explosive,
         //blastDirection: 5.0 * pi / 6.0, // radial value - LEFT
         particleDrag: 0.05, // apply drag to the confetti

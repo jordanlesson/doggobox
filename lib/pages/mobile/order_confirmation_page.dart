@@ -21,6 +21,11 @@ class _OrderConfirmationPageMobileState
 
     _controllerCenterLeft..play();
     _controllerCenterRight..play();
+
+    // Waits till first frame to load before calling async function
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      EmailService().sendOrderConfirmationEmail(["jordantreylesson@gmail.com"]);
+    });
   }
 
   @override

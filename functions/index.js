@@ -9,6 +9,7 @@ admin.initializeApp();
 const stripe = require('stripe')(functions.config().stripe.secret, {
   apiVersion: '2020-03-02',
 });
+const nodemailer = require('nodemailer');
 
 
 /**
@@ -25,6 +26,7 @@ exports.createStripeCustomer = functions.auth.user().onCreate(async (user) => {
     customer_id: customer.id,
     setup_secret: intent.client_secret,
   }, { merge: true });
+
   return;
 });
 
@@ -83,6 +85,29 @@ exports.addCustomerDetails = functions.firestore
     );
 
     change.after.ref.set(customer, { merge: true });
+
+    var transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: 'contact@thedoggobox.com',
+        pass: 'turtletown18'
+      }
+    });
+    
+    var mailOptions = {
+      from: '"DoggoBox" <contact@thedoggobox.com>',
+      to: user.email,
+      subject: 'Your Order Has Been Received',
+      text: 'Thank you for ordering your DoggoBox, we are working to fulfill your order as soon as possible\n\nBe prepared to spoil your doggo with the best toys and treats in the business\n\nJordan\nCofounder, Doggo Brand',
+    };
+    
+    transporter.sendMail(mailOptions, function(error, info) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log('Email sent: ' + info.response);
+      }
+    });
   });
 
 

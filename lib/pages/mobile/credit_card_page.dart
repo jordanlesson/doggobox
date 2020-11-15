@@ -145,26 +145,78 @@ class _CreditCardPageMobileState extends State<CreditCardPageMobile> {
   }
 
   Widget _buildCreditCardTextFields() {
-    return Container(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            padding: EdgeInsets.only(bottom: 20.0),
-            child: Text(
-              "Fill In Your Credit Card Details",
-              style: TextStyle(
-                fontSize: 18.0,
-                fontWeight: FontWeight.w600,
+    return StreamBuilder<CheckOutResponse>(
+        initialData: CheckOutResponse(
+          isCardValid: true,
+          isCustomerInfoValid: false,
+          isValid: false,
+        ),
+        stream: _checkOutBloc.checkOutStream,
+        builder: (context, snapshot) {
+          final CheckOutResponse checkOut = snapshot.data;
+          return Stack(
+            children: [
+              Container(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      padding: EdgeInsets.only(bottom: 20.0),
+                      child: Text(
+                        "Fill In Your Credit Card Details",
+                        style: TextStyle(
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                    CreditCardTextField(
+                      onCreditCardChanged: _onCreditCardChanged,
+                      error: !checkOut.isCardValid,
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ),
-          CreditCardTextField(
-            onCreditCardChanged: _onCreditCardChanged,
-          ),
-        ],
-      ),
-    );
+              !checkOut.isCardValid
+                  ? Padding(
+                      padding: EdgeInsets.only(bottom: 5.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Center(
+                            child: Container(
+                              margin: EdgeInsets.only(top: 5.0),
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 10.0,
+                                vertical: 5.0,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).errorColor,
+                                borderRadius: BorderRadius.circular(2.0),
+                              ),
+                              child: Text(
+                                "Invalid Credit Card",
+                                style: Theme.of(context).textTheme.overline,
+                              ),
+                            ),
+                          ),
+                          CustomPaint(
+                            painter: TrianglePainter(
+                              strokeColor: Theme.of(context).errorColor,
+                              paintingStyle: PaintingStyle.fill,
+                            ),
+                            child: Container(
+                              height: 6.0,
+                              width: 10.0,
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  : Container(),
+            ],
+          );
+        });
   }
 
   Widget _buildAddressTextFields() {
@@ -341,11 +393,16 @@ class _CreditCardPageMobileState extends State<CreditCardPageMobile> {
   Widget _buildButton() {
     return BlocProvider(
       bloc: _checkOutBloc,
-      child: StreamBuilder<bool>(
-        initialData: false,
+      child: StreamBuilder<CheckOutResponse>(
+        initialData: CheckOutResponse(
+          isCardValid: true,
+          isCustomerInfoValid: false,
+          isValid: false,
+        ),
         stream: _checkOutBloc.checkOutStream,
-        builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
-          final bool formIsValid = snapshot.data;
+        builder:
+            (BuildContext context, AsyncSnapshot<CheckOutResponse> snapshot) {
+          final CheckOutResponse checkOut = snapshot.data;
           return StreamBuilder<FirestoreResponse>(
             initialData:
                 FirestoreResponse(message: "initialized", success: false),
@@ -355,7 +412,7 @@ class _CreditCardPageMobileState extends State<CreditCardPageMobile> {
               final FirestoreResponse response = transactionSnapshot.data;
               print(response.message);
               return DoggoButton(
-                enabled: formIsValid && response.message != "loading",
+                enabled: response.message != "loading",
                 text: "⚡️Claim Your DoggoBox Now⚡️",
                 onPressed: () => _checkOutBloc.onDoggoBoxPurchased(
                     context, widget.user, _customer, _card, _address),

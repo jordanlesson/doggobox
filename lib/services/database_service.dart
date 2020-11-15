@@ -26,11 +26,27 @@ class FirebaseService {
         password: 'turtletown18',
       );
 
+      print("User ${user.user.uid} Created");
+
       return FirebaseAuthResponse(
-          user: user.user,
-          message: "Customer Created: ${user.user.email}",
-          success: true);
+        user: user.user,
+        message: "Customer Created: ${user.user.email}",
+        success: true,
+      );
     } catch (error) {
+      if (error.toString() ==
+          '[firebase_auth/email-already-in-use] The email address is already in use by another account.') {
+        UserCredential user = await firebaseAuth.signInWithEmailAndPassword(
+            email: email, password: 'turtletown18');
+
+        print("User ${user.user.uid} Logged In");
+
+        return FirebaseAuthResponse(
+          user: user.user,
+          message: "Customer Signed In: ${user.user.email}",
+          success: true,
+        );
+      }
       return FirebaseAuthResponse(
         user: null,
         message: "Failed To Create Customer: $error",

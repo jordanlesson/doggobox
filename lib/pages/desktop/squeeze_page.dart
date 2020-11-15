@@ -7,20 +7,27 @@ class SqueezePageDesktop extends StatefulWidget {
 
 class _SqueezePageDesktopState extends State<SqueezePageDesktop> {
   EmailBloc emailBloc;
+  TextEditingController emailController;
   FocusNode emailFocusNode;
+  ScrollController scrollController;
   String _email;
 
   @override
   void initState() {
     super.initState();
+    _email = "";
     emailBloc = EmailBloc();
+    emailController = TextEditingController();
     emailFocusNode = FocusNode();
+    scrollController = ScrollController();
   }
 
   @override
   void dispose() {
     emailBloc.dispose();
+    emailController.dispose();
     emailFocusNode.dispose();
+    scrollController.dispose();
     super.dispose();
   }
 
@@ -65,7 +72,7 @@ class _SqueezePageDesktopState extends State<SqueezePageDesktop> {
                   ),
                 ),
                 TextSpan(
-                  text: "\$5",
+                  text: "\$1",
                   style: TextStyle(
                     color: Colors.black.withOpacity(0.75),
                     fontSize: 55.0,
@@ -98,92 +105,171 @@ class _SqueezePageDesktopState extends State<SqueezePageDesktop> {
   Widget _buildEmailTextField() {
     return BlocProvider(
       bloc: emailBloc,
-      child: AutofillGroup(
-        child: Container(
-          constraints: BoxConstraints(maxWidth: 440.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                child: Text(
-                  "What's your best email? ✉️",
-                  style: TextStyle(
-                    fontSize: 24.0,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.symmetric(vertical: 20.0),
-                constraints: BoxConstraints(
-                  maxWidth: 440.0,
-                ),
-                child: TextField(
-                  autofillHints: [AutofillHints.email],
-                  keyboardType: TextInputType.emailAddress,
-                  focusNode: emailFocusNode,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15.0),
-                      borderSide: BorderSide(
-                        color: Theme.of(context).accentColor.withOpacity(1.0),
-                        width: 2.0,
-                      ),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15.0),
-                      borderSide: BorderSide(
-                        color: Theme.of(context).accentColor.withOpacity(1.0),
-                        width: 2.0,
-                      ),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15.0),
-                      borderSide: BorderSide(
-                        color: Theme.of(context).accentColor.withOpacity(1.0),
-                        width: 2.0,
-                      ),
-                    ),
-                    contentPadding: EdgeInsets.only(
-                      left: 25.0,
-                      top: 16.0,
-                      bottom: 15.0,
-                      right: 25.0,
-                    ),
-                    hintText: "simba@thedoggobox.com",
-                    hintStyle: TextStyle(
-                      color: Color.fromRGBO(0, 0, 0, 0.4),
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 18.0,
-                    fontWeight: FontWeight.w400,
-                  ),
-                  onChanged: (String input) {
-                    emailBloc.checkEmail(input.toLowerCase());
-                    _email = input;
-                  },
-                ),
-              ),
-              StreamBuilder<bool>(
-                stream: emailBloc.emailStream,
-                initialData: false,
-                builder: (context, emailSnapshot) {
-                  final bool enabled = emailSnapshot.data;
-                  return DoggoButton(
-                    text: "⚡️Claim Your DoggoBox Now⚡️",
-                    enabled: enabled,
-                    onPressed: () => emailBloc.onDoggoBoxClaimed(
-                        context, _email.toLowerCase()),
-                  );
-                },
-              ),
-            ],
-          ),
+      child: StreamBuilder<EmailResponse>(
+        stream: emailBloc.emailStream,
+        initialData: EmailResponse(
+          user: null,
+          success: false,
+          error: false,
+          isLoading: false,
         ),
+        builder: (context, emailSnapshot) {
+          return AutofillGroup(
+            child: Container(
+              constraints: BoxConstraints(maxWidth: 440.0),
+              child: Stack(
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        child: Text(
+                          "What's your best email? ✉️",
+                          style: TextStyle(
+                            fontSize: 24.0,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.symmetric(vertical: 20.0),
+                        constraints: BoxConstraints(
+                          maxWidth: 440.0,
+                        ),
+                        child: TextFormField(
+                          controller: emailController,
+                          autofillHints: [AutofillHints.email],
+                          keyboardType: TextInputType.emailAddress,
+                          focusNode: emailFocusNode,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15.0),
+                              borderSide: BorderSide(
+                                color: Theme.of(context)
+                                    .accentColor
+                                    .withOpacity(1.0),
+                                width: 2.0,
+                              ),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15.0),
+                              borderSide: BorderSide(
+                                color: Theme.of(context)
+                                    .accentColor
+                                    .withOpacity(1.0),
+                                width: 2.0,
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15.0),
+                              borderSide: BorderSide(
+                                color: Theme.of(context)
+                                    .accentColor
+                                    .withOpacity(1.0),
+                                width: 2.0,
+                              ),
+                            ),
+                            errorBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15.0),
+                              borderSide: BorderSide(
+                                color: Theme.of(context).errorColor,
+                                width: 2.0,
+                              ),
+                            ),
+                            focusedErrorBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15.0),
+                              borderSide: BorderSide(
+                                color: Theme.of(context).errorColor,
+                                width: 2.0,
+                              ),
+                            ),
+                            contentPadding: EdgeInsets.only(
+                              left: 25.0,
+                              top: 16.0,
+                              bottom: 15.0,
+                              right: 25.0,
+                            ),
+                            hintText: "simba@thedoggobox.com",
+                            hintStyle: TextStyle(
+                              color: Color.fromRGBO(0, 0, 0, 0.4),
+                              fontSize: 18.0,
+                              fontWeight: FontWeight.w400,
+                            ),
+                            errorText: emailSnapshot.data.error ? "" : null,
+                            errorStyle: TextStyle(height: 0.0),
+                            suffixIcon: emailSnapshot.data.error
+                                ? Icon(
+                                    Icons.error,
+                                    color: Colors.red,
+                                  )
+                                : Container(
+                                    height: 0.0,
+                                    width: 0.0,
+                                  ),
+                          ),
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.w400,
+                          ),
+                          onChanged: (String input) {
+                            emailBloc.checkEmail(input.toLowerCase());
+                            _email = input;
+                          },
+                        ),
+                      ),
+                      DoggoButton(
+                        text: "⚡️Claim Your DoggoBox Now⚡️",
+                        enabled: !emailSnapshot.data.isLoading,
+                        onPressed: () => _email.isNotEmpty
+                            ? emailBloc.onDoggoBoxClaimed(
+                                context, _email.toLowerCase().trim())
+                            : null,
+                      ),
+                    ],
+                  ),
+                  emailSnapshot.data.error
+                      ? Padding(
+                          padding: EdgeInsets.only(bottom: 5.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Center(
+                                child: Container(
+                                  margin: EdgeInsets.only(top: 15.0),
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 10.0,
+                                    vertical: 5.0,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: Theme.of(context).errorColor,
+                                    borderRadius: BorderRadius.circular(2.0),
+                                  ),
+                                  child: Text(
+                                    "Invalid Email",
+                                    style: Theme.of(context).textTheme.overline,
+                                  ),
+                                ),
+                              ),
+                              CustomPaint(
+                                painter: TrianglePainter(
+                                  strokeColor: Theme.of(context).errorColor,
+                                  paintingStyle: PaintingStyle.fill,
+                                ),
+                                child: Container(
+                                  height: 6.0,
+                                  width: 10.0,
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      : Container(),
+                ],
+              ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -255,7 +341,7 @@ class _SqueezePageDesktopState extends State<SqueezePageDesktop> {
                     //constraints: BoxConstraints(maxWidth: 350.0),
                     padding: EdgeInsets.symmetric(vertical: 25.0),
                     child: Text(
-                      "If your dog isn't 100% happy with their DoggoBox, we'll work with you to make it right no muss, no fuss, no disappointed pups. Plus it's actually only \$5",
+                      "If your dog isn't 100% happy with their DoggoBox, we'll work with you to make it right no muss, no fuss, no disappointed pups. Plus it's actually only \$1",
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: 18.0,
@@ -297,8 +383,7 @@ class _SqueezePageDesktopState extends State<SqueezePageDesktop> {
                           ],
                         ),
                       ),
-                      onTap: () =>
-                          FocusScope.of(context).requestFocus(emailFocusNode),
+                      onTap: focusEmailTextField,
                     ),
                   ),
                 ],
@@ -387,7 +472,7 @@ class _SqueezePageDesktopState extends State<SqueezePageDesktop> {
                               .copyWith(fontSize: 18.0),
                         ),
                         TextSpan(
-                          text: "only \$5 right now.\n\n",
+                          text: "only \$1 right now.\n\n",
                           style: Theme.of(context).textTheme.bodyText1.copyWith(
                               fontSize: 18.0, fontWeight: FontWeight.w600),
                         ),
@@ -459,6 +544,7 @@ class _SqueezePageDesktopState extends State<SqueezePageDesktop> {
       child: Column(
         children: [
           Container(
+            padding: EdgeInsets.only(bottom: 20.0),
             child: Text(
               "Don't Take It From Us - See What They Are Barking About",
               textAlign: TextAlign.center,
@@ -466,6 +552,7 @@ class _SqueezePageDesktopState extends State<SqueezePageDesktop> {
             ),
           ),
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
                 child: Testimonial(
@@ -615,8 +702,7 @@ class _SqueezePageDesktopState extends State<SqueezePageDesktop> {
                           ],
                         ),
                       ),
-                      onTap: () =>
-                          FocusScope.of(context).requestFocus(emailFocusNode),
+                      onTap: focusEmailTextField,
                     ),
                   ),
                 ],
@@ -628,17 +714,25 @@ class _SqueezePageDesktopState extends State<SqueezePageDesktop> {
     );
   }
 
+  void focusEmailTextField() async {
+    FocusManager.instance.primaryFocus.unfocus();
+    await scrollController.animateTo(0,
+        curve: Curves.linear, duration: Duration(milliseconds: 500));
+    emailFocusNode.requestFocus();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AnnouncementBar(
-        announcement: "GET YOUR FIRST DOGGOBOX FOR \$5 & FREE SHIPPING",
+        announcement: "GET YOUR FIRST DOGGOBOX FOR \$1 & FREE SHIPPING",
         desktop: true,
         preferredSize: Size.fromHeight(35.0),
       ),
       body: Container(
         child: ListView(
+          controller: scrollController,
           padding: EdgeInsets.only(
             top: 0.0,
             bottom: 130.0,

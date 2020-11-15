@@ -247,6 +247,7 @@ class _WaterBottleUpsellPageMobileState
       alignment: Alignment.center,
       child: Text(
         "Your Doggo Will Thank You",
+        textAlign: TextAlign.center,
         style: Theme.of(context).textTheme.headline1.copyWith(fontSize: 25.0),
       ),
     );

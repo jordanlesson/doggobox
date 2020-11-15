@@ -123,7 +123,7 @@ class _AnimalShelterUpsellPageDesktopState
               subtitle:
                   "Food, treats and toys for our the doggos that need it most.",
               details:
-                  "Add this box to your order for only \$19.99 a month and we will send food, treats and toys for our the doggos that need it most every month.",
+                  "Add this box to your order for only \$29.99 a month and we will send food, treats and toys for our the doggos that need it most every month.",
               buttonText:
                   "Yes! Send a DoggoBox to an Animal Shelter each month ",
               desktop: true,

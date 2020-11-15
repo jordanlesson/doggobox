@@ -10,7 +10,7 @@ class SmallDoggoBox extends Product {
   String name = "The Small DoggoBox";
   String description =
       "A DoggoBox full of toys made specifically for your cute and cuddly pupper";
-  int price = 1999;
+  int price = 2999;
 }
 
 class BigDoggoBox extends Product {
@@ -18,14 +18,14 @@ class BigDoggoBox extends Product {
   String name = "The Big DoggoBox";
   String description =
       "A DoggoBox full of toys made specifically for your big and bold doggo";
-  int price = 2499;
+  int price = 2999;
 }
 
 class AnimalShelterDoggoBox extends Product {
   String id = "prod_I2AYCq90xdg62g";
   String name = "Animal Shelter DoggoBox";
   String description = "A toy-filled box delivered to dogs in need";
-  int price = 2499;
+  int price = 2999;
 }
 
 class ReusableDogWaterBottle extends Product {

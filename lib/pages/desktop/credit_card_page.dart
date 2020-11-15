@@ -71,7 +71,7 @@ class _CreditCardPageDesktopState extends State<CreditCardPageDesktop> {
               ),
             ),
             TextSpan(
-              text: "\$5",
+              text: "\$1",
               style: TextStyle(
                 color: Colors.black.withOpacity(0.75),
                 fontSize: 55.0,
@@ -206,6 +206,7 @@ class _CreditCardPageDesktopState extends State<CreditCardPageDesktop> {
           ),
           CreditCardTextField(
             onCreditCardChanged: _onCreditCardChanged,
+            error: false,
           ),
         ],
       ),
@@ -343,11 +344,16 @@ class _CreditCardPageDesktopState extends State<CreditCardPageDesktop> {
   Widget _buildButton() {
     return BlocProvider(
       bloc: _checkOutBloc,
-      child: StreamBuilder<bool>(
-        initialData: false,
+      child: StreamBuilder<CheckOutResponse>(
+        initialData: CheckOutResponse(
+          isCardValid: false,
+          isCustomerInfoValid: false,
+          isValid: false,
+        ),
         stream: _checkOutBloc.checkOutStream,
-        builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
-          final bool formIsValid = snapshot.data;
+        builder:
+            (BuildContext context, AsyncSnapshot<CheckOutResponse> snapshot) {
+          final CheckOutResponse checkOut = snapshot.data;
           return StreamBuilder<FirestoreResponse>(
             initialData:
                 FirestoreResponse(message: "initialized", success: false),
@@ -357,7 +363,7 @@ class _CreditCardPageDesktopState extends State<CreditCardPageDesktop> {
               final FirestoreResponse response = transactionSnapshot.data;
               print(response.message);
               return DoggoButton(
-                enabled: formIsValid && response.message != "loading",
+                enabled: checkOut.isValid && response.message != "loading",
                 text: "⚡️Claim Your DoggoBox Now⚡️",
                 onPressed: () => _checkOutBloc.onDoggoBoxPurchased(
                   context,

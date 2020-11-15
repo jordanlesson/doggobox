@@ -2,9 +2,11 @@ import 'package:doggobox/index.dart';
 
 class CreditCardTextField extends StatefulWidget {
   final void Function(CreditCard) onCreditCardChanged;
+  final bool error;
 
   CreditCardTextField({
     @required this.onCreditCardChanged,
+    @required this.error,
     Key key,
   }) : super(key: key);
 
@@ -14,11 +16,15 @@ class CreditCardTextField extends StatefulWidget {
 
 class _CreditCardTextFieldState extends State<CreditCardTextField> {
   CreditCard _card;
+  TextEditingController cardNumberController;
 
   @override
   void initState() {
     super.initState();
-    _card = CreditCard();
+    _card = CreditCard(
+      number: "",
+    );
+    cardNumberController = TextEditingController();
   }
 
   Widget _buildCardNumberTextField() {
@@ -33,11 +39,14 @@ class _CreditCardTextFieldState extends State<CreditCardTextField> {
           children: [
             Expanded(
               child: TextField(
+                controller: cardNumberController,
                 autofillHints: [AutofillHints.creditCardNumber],
                 onChanged: (String number) {
-                  _card.number = number.replaceAll(" ", "");
+                  setState(() {
+                    _card.number = number.replaceAll(" ", "");
 
-                  widget.onCreditCardChanged(_card);
+                    widget.onCreditCardChanged(_card);
+                  });
                 },
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
@@ -63,13 +72,15 @@ class _CreditCardTextFieldState extends State<CreditCardTextField> {
                 ],
               ),
             ),
-            Container(
-              height: 23.0,
-              margin: EdgeInsets.only(right: 5.0),
-              child: Image(
-                image: AssetImage("assets/credit_cards_2x.png"),
-              ),
-            ),
+            _card.number.isEmpty
+                ? Container(
+                    height: 23.0,
+                    margin: EdgeInsets.only(right: 5.0),
+                    child: Image(
+                      image: AssetImage("assets/credit_cards_2x.png"),
+                    ),
+                  )
+                : Container(),
           ],
         ),
       ),
@@ -161,10 +172,15 @@ class _CreditCardTextFieldState extends State<CreditCardTextField> {
       alignment: Alignment.topLeft,
       decoration: BoxDecoration(
         color: Colors.white,
-        border: Border.all(
-          color: Theme.of(context).accentColor.withOpacity(1.0),
-          width: 2.0,
-        ),
+        border: widget.error
+            ? Border.all(
+                color: Theme.of(context).errorColor,
+                width: 2.0,
+              )
+            : Border.all(
+                color: Theme.of(context).accentColor.withOpacity(1.0),
+                width: 2.0,
+              ),
         borderRadius: BorderRadius.circular(15.0),
       ),
       child: Column(

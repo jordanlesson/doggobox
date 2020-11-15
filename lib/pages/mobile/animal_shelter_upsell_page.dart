@@ -98,7 +98,7 @@ class _AnimalShelterUpsellPageMobileState
               subtitle:
                   "Food, treats and toys for our the doggos that need it most.",
               details:
-                  "Add this box to your order for only \$19.99 a month and we will send food, treats and toys for our the doggos that need it most every month.",
+                  "Add this box to your order for only \$29.99 a month and we will send food, treats and toys for our the doggos that need it most every month.",
               buttonText:
                   "Yes! Send a DoggoBox to an Animal Shelter each month ",
               desktop: false,
@@ -129,7 +129,7 @@ class _AnimalShelterUpsellPageMobileState
   Widget _buildDeclineText() {
     return Container(
       padding: EdgeInsets.symmetric(
-        vertical: 15.0,
+        vertical: 25.0,
         horizontal: 20.0,
       ),
       alignment: Alignment.center,
@@ -166,6 +166,7 @@ class _AnimalShelterUpsellPageMobileState
         maxWidth: 300.0,
       ),
       padding: EdgeInsets.only(
+        top: 10.0,
         left: 25.0,
         right: 25.0,
         bottom: 35.0,
@@ -239,7 +240,7 @@ class _AnimalShelterUpsellPageMobileState
                   0.0,
                 ),
                 child: Text(
-                  "Add this box to your order for only \$19.99 a month and we will send food, treats and toys for the doggos that need it most every month.",
+                  "Add this box to your order for only \$29.99 a month and we will send food, treats and toys for the doggos that need it most every month.",
                   style: Theme.of(context).textTheme.bodyText1.copyWith(
                         color: Color(0xFF999999),
                         fontSize: 10.0,
@@ -317,9 +318,9 @@ class _AnimalShelterUpsellPageMobileState
               _buildTitle(),
               _buildOneTimeOffer(),
               _buildDeclineText(),
-              _buildBadge(),
               _buildSecondOffer(),
               _buildDeclineText(),
+              _buildBadge(),
             ],
           ),
         ),
