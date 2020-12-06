@@ -10,6 +10,7 @@ const stripe = require('stripe')(functions.config().stripe.secret, {
   apiVersion: '2020-03-02',
 });
 const nodemailer = require('nodemailer');
+const dayjs = require('dayjs');
 
 
 /**
@@ -205,6 +206,7 @@ exports.createStripePayment = functions.firestore
           payment_method,
           confirm: true,
           confirmation_method: 'automatic',
+          setup_future_usage: 'off_session',
           
         }
       }
@@ -257,10 +259,15 @@ exports.createStripeSubscription = functions.firestore.document('customers/{user
     // Look up the Stripe customer id.
     const customerId = (await snap.ref.parent.parent.get()).data().customer_id;
 
+    const firstDayNextMonth = dayjs().add(1, 'M').startOf('M').unix();
+    // const currentDay = dayjs();
+    // let dayDifference = firstDayNextMonth.diff(currentDay, 'd');
+
+    
     const subscription = await stripe.subscriptions.create({
       customer: customerId,
       items: items,
-      trial_period_days: 30,
+      trial_end: firstDayNextMonth,
     });
     // If the result is successful, write it back to the database.
     await snap.ref.set(subscription);

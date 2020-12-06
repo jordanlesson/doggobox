@@ -146,77 +146,84 @@ class _CreditCardPageMobileState extends State<CreditCardPageMobile> {
 
   Widget _buildCreditCardTextFields() {
     return StreamBuilder<CheckOutResponse>(
-        initialData: CheckOutResponse(
-          isCardValid: true,
-          isCustomerInfoValid: false,
-          isValid: false,
-        ),
-        stream: _checkOutBloc.checkOutStream,
-        builder: (context, snapshot) {
-          final CheckOutResponse checkOut = snapshot.data;
-          return Stack(
-            children: [
-              Container(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      padding: EdgeInsets.only(bottom: 20.0),
-                      child: Text(
-                        "Fill In Your Credit Card Details",
-                        style: TextStyle(
-                          fontSize: 18.0,
-                          fontWeight: FontWeight.w600,
-                        ),
+      initialData: CheckOutResponse(
+        isCardValid: true,
+        isCustomerInfoValid: false,
+        isValid: false,
+      ),
+      stream: _checkOutBloc.checkOutStream,
+      builder: (context, snapshot) {
+        final CheckOutResponse checkOut = snapshot.data;
+        return Stack(
+          alignment: Alignment.topCenter,
+          children: [
+            Container(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    padding: EdgeInsets.only(bottom: 20.0),
+                    child: Text(
+                      "Fill In Your Credit Card Details",
+                      style: TextStyle(
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
-                    CreditCardTextField(
-                      onCreditCardChanged: _onCreditCardChanged,
-                      error: !checkOut.isCardValid,
-                    ),
-                  ],
-                ),
+                  ),
+                  CreditCardTextField(
+                    onCreditCardChanged: _onCreditCardChanged,
+                    error: !checkOut.isCardValid,
+                  ),
+                ],
               ),
-              !checkOut.isCardValid
-                  ? Padding(
-                      padding: EdgeInsets.only(bottom: 5.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Center(
-                            child: Container(
-                              margin: EdgeInsets.only(top: 5.0),
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 10.0,
-                                vertical: 5.0,
-                              ),
-                              decoration: BoxDecoration(
-                                color: Theme.of(context).errorColor,
-                                borderRadius: BorderRadius.circular(2.0),
-                              ),
-                              child: Text(
-                                "Invalid Credit Card",
-                                style: Theme.of(context).textTheme.overline,
-                              ),
-                            ),
-                          ),
-                          CustomPaint(
-                            painter: TrianglePainter(
-                              strokeColor: Theme.of(context).errorColor,
-                              paintingStyle: PaintingStyle.fill,
-                            ),
-                            child: Container(
-                              height: 6.0,
-                              width: 10.0,
-                            ),
-                          ),
-                        ],
-                      ),
-                    )
-                  : Container(),
-            ],
-          );
-        });
+            ),
+            !checkOut.isCardValid
+                ? Container(
+                    //color: Colors.green,
+                    alignment: Alignment.topCenter,
+                    padding: EdgeInsets.only(top: 10.0),
+                    child: ErrorAlert(errorText: "Invalid Credit Card"),
+                  )
+                : Container(),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildFullNameTextField() {
+    return StreamBuilder<CheckOutResponse>(
+      initialData: CheckOutResponse(
+        isCardValid: true,
+        isCustomerInfoValid: true,
+        isValid: false,
+      ),
+      stream: _checkOutBloc.checkOutStream,
+      builder:
+          (BuildContext context, AsyncSnapshot<CheckOutResponse> snapshot) {
+        CheckOutResponse checkOut = snapshot.data;
+        return Stack(
+          children: [
+            InfoTextField(
+              label: "Full Name",
+              hintText: "Simba Doggo",
+              keyboardType: TextInputType.name,
+              onChanged: _onNameChanged,
+              autofillHints: [AutofillHints.name],
+            ),
+            !checkOut.isCustomerInfoValid
+                ? Container(
+                    //color: Colors.green,
+                    alignment: Alignment.topCenter,
+                    padding: EdgeInsets.only(top: 25.0),
+                    child: ErrorAlert(errorText: "Incomplete Address"),
+                  )
+                : Container(),
+          ],
+        );
+      },
+    );
   }
 
   Widget _buildAddressTextFields() {
@@ -413,7 +420,9 @@ class _CreditCardPageMobileState extends State<CreditCardPageMobile> {
               print(response.message);
               return DoggoButton(
                 enabled: response.message != "loading",
-                text: "⚡️Claim Your DoggoBox Now⚡️",
+                text: response.message != "loading"
+                    ? "⚡️Claim Your DoggoBox Now⚡️"
+                    : "Claiming Doggo Box...",
                 onPressed: () => _checkOutBloc.onDoggoBoxPurchased(
                     context, widget.user, _customer, _card, _address),
               );
@@ -490,51 +499,47 @@ class _CreditCardPageMobileState extends State<CreditCardPageMobile> {
       ),
       body: Container(
         child: AutofillGroup(
-          child: ListView(
+          child: SingleChildScrollView(
             padding: EdgeInsets.only(
               top: 0.0,
               bottom: 100.0,
               right: 25.0,
               left: 25.0,
             ),
-            children: [
-              _buildOffer(),
-              _buildApplePayButton(context),
-              _buildCreditCardTextFields(),
-              InfoTextField(
-                label: "Full Name",
-                hintText: "Simba Doggo",
-                keyboardType: TextInputType.name,
-                onChanged: _onNameChanged,
-                autofillHints: [AutofillHints.name],
-              ),
-              InfoTextField(
-                label: "Address",
-                hintText: "150 Berry St. Apt 23",
-                keyboardType: TextInputType.streetAddress,
-                onChanged: _onStreetAddressChanged,
-                autofillHints: [AutofillHints.fullStreetAddress],
-              ),
-              InfoTextField(
-                label: "City",
-                hintText: "San Francisco",
-                onChanged: _onCityChanged,
-                autofillHints: [AutofillHints.addressCity],
-              ),
-              _buildAddressTextFields(),
-              Padding(
-                padding: EdgeInsets.only(bottom: 30.0),
-                child: InfoTextField(
-                  label: "Country",
-                  hintText: "United States",
-                  onChanged: _onCountryChanged,
-                  autofillHints: [AutofillHints.countryName],
+            child: Column(
+              children: [
+                _buildOffer(),
+                _buildApplePayButton(context),
+                _buildCreditCardTextFields(),
+                _buildFullNameTextField(),
+                InfoTextField(
+                  label: "Address",
+                  hintText: "150 Berry St. Apt 23",
+                  keyboardType: TextInputType.streetAddress,
+                  onChanged: _onStreetAddressChanged,
+                  autofillHints: [AutofillHints.fullStreetAddress],
                 ),
-              ),
-              _buildButton(),
-              _buildSecurityNote(),
-              _buildBadge(),
-            ],
+                InfoTextField(
+                  label: "City",
+                  hintText: "San Francisco",
+                  onChanged: _onCityChanged,
+                  autofillHints: [AutofillHints.addressCity],
+                ),
+                _buildAddressTextFields(),
+                Padding(
+                  padding: EdgeInsets.only(bottom: 30.0),
+                  child: InfoTextField(
+                    label: "Country",
+                    hintText: "United States",
+                    onChanged: _onCountryChanged,
+                    autofillHints: [AutofillHints.countryName],
+                  ),
+                ),
+                _buildButton(),
+                _buildSecurityNote(),
+                _buildBadge(),
+              ],
+            ),
           ),
         ),
       ),

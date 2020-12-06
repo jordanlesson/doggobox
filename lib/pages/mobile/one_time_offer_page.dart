@@ -12,12 +12,18 @@ class OneTimeOfferPageMobile extends StatefulWidget {
 }
 
 class _OneTimeOfferPageMobileState extends State<OneTimeOfferPageMobile> {
-  List<Product> cart;
+  ShoppingCartBloc _shoppingCartBloc;
 
   @override
   void initState() {
     super.initState();
-    cart = List<Product>();
+    _shoppingCartBloc = ShoppingCartBloc();
+  }
+
+  @override
+  void dispose() {
+    _shoppingCartBloc.dispose();
+    super.dispose();
   }
 
   Widget _buildOffer() {
@@ -117,11 +123,9 @@ class _OneTimeOfferPageMobileState extends State<OneTimeOfferPageMobile> {
             },
             child: ViewController(
               mobilePage: AnimalShelterUpsellPageMobile(
-                cart: cart,
                 user: widget.user,
               ),
               desktopPage: AnimalShelterUpsellPageMobile(
-                cart: cart,
                 user: widget.user,
               ),
             ),
@@ -141,7 +145,7 @@ class _OneTimeOfferPageMobileState extends State<OneTimeOfferPageMobile> {
       buttonText: "Yes! Continue to get the Small DoggoBox each month ",
       desktop: false,
       onButtonPressed: () {
-        cart.add(SmallDoggoBox());
+        _shoppingCartBloc.checkOutItem(widget.user, SmallDoggoBox());
         _navigateToNextStep();
       },
     );
@@ -157,7 +161,7 @@ class _OneTimeOfferPageMobileState extends State<OneTimeOfferPageMobile> {
       buttonText: "Yes! Continue to get the Big DoggoBox each month ",
       desktop: false,
       onButtonPressed: () {
-        cart.add(BigDoggoBox());
+        _shoppingCartBloc.checkOutItem(widget.user, BigDoggoBox());
         _navigateToNextStep();
       },
     );

@@ -35,6 +35,12 @@ class EmailBloc extends BlocBase {
           await FirebaseService.createUser(email);
 
       if (authResponse.success) {
+        emailSink.add(EmailResponse(
+          user: null,
+          success: false,
+          error: false,
+          isLoading: false,
+        ));
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (BuildContext context) {

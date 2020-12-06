@@ -1,11 +1,9 @@
 import 'package:doggobox/index.dart';
 
 class WaterBottleUpsellPageDesktop extends StatefulWidget {
-  final List<Product> cart;
   final User user;
 
   WaterBottleUpsellPageDesktop({
-    @required this.cart,
     @required this.user,
   });
 
@@ -17,8 +15,7 @@ class WaterBottleUpsellPageDesktop extends StatefulWidget {
 class _WaterBottleUpsellPageDesktopState
     extends State<WaterBottleUpsellPageDesktop> {
   VideoPlayerController _videoPlayerController;
-  ShoppingCartBloc shoppingCartBloc;
-  List<Product> cart;
+  ShoppingCartBloc _shoppingCartBloc;
 
   @override
   void initState() {
@@ -34,14 +31,13 @@ class _WaterBottleUpsellPageDesktopState
     _videoPlayerController.initialize().then((_) => setState(() {}));
     _videoPlayerController.play();
 
-    shoppingCartBloc = ShoppingCartBloc();
-    cart = List<Product>.from(widget.cart);
+    _shoppingCartBloc = ShoppingCartBloc();
   }
 
   @override
   void dispose() {
     _videoPlayerController.dispose();
-    shoppingCartBloc.dispose();
+    _shoppingCartBloc.dispose();
     super.dispose();
   }
 
@@ -186,8 +182,9 @@ class _WaterBottleUpsellPageDesktopState
               ),
             ),
             onTap: () {
-              cart.add(ReusableDogWaterBottle());
-              _navigateToNextStep(cart);
+              _shoppingCartBloc.checkOutItem(
+                  widget.user, ReusableDogWaterBottle());
+              _navigateToNextStep();
             },
           ),
           Container(
@@ -213,7 +210,7 @@ class _WaterBottleUpsellPageDesktopState
                   ],
                 ),
               ),
-              onTap: () => _navigateToNextStep(cart),
+              onTap: () => _navigateToNextStep(),
             ),
           ),
           Container(
@@ -296,8 +293,9 @@ class _WaterBottleUpsellPageDesktopState
               ),
             ),
             onTap: () {
-              cart.add(ReusableDogWaterBottle());
-              _navigateToNextStep(cart);
+              _shoppingCartBloc.checkOutItem(
+                  widget.user, ReusableDogWaterBottle());
+              _navigateToNextStep();
             },
           ),
           Container(
@@ -323,7 +321,7 @@ class _WaterBottleUpsellPageDesktopState
                   ],
                 ),
               ),
-              onTap: () => _navigateToNextStep(cart),
+              onTap: () => _navigateToNextStep(),
             ),
           ),
         ],
@@ -331,10 +329,7 @@ class _WaterBottleUpsellPageDesktopState
     );
   }
 
-  void _navigateToNextStep(List<Product> cart) {
-    // Purchases everything added to cart
-    shoppingCartBloc.onFinishedShopping(widget.user, cart);
-
+  void _navigateToNextStep() {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) {

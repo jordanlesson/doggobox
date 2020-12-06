@@ -57,27 +57,33 @@ class _SqueezePageMobileState extends State<SqueezePageMobile> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          RichText(
-            text: TextSpan(
-              children: [
-                TextSpan(
-                  text: "Get the DoggoBox for only ",
-                  style: TextStyle(
+          Container(
+            //color: Colors.red,
+            //padding: EdgeInsets.only(bottom: 10.0),
+            child: RichText(
+              text: TextSpan(
+                children: [
+                  TextSpan(
+                    text: "Get the DoggoBox for only \$1",
+                    style: TextStyle(
+                      fontFamily: "Poppins",
                       color: Colors.black,
                       fontSize: 35.0,
                       fontWeight: FontWeight.w600,
-                      height: 1.252),
-                ),
-                TextSpan(
-                  text: "\$1",
-                  style: TextStyle(
-                    color: Colors.black.withOpacity(0.75),
-                    fontSize: 35.0,
-                    fontWeight: FontWeight.w300,
-                    height: 1.252,
+                      height: 1.5,
+                    ),
                   ),
-                ),
-              ],
+                  // TextSpan(
+                  //   text: "\$1",
+                  //   style: TextStyle(
+                  //     color: Colors.black.withOpacity(0.75),
+                  //     fontSize: 35.0,
+                  //     fontWeight: FontWeight.w300,
+                  //     height: 1.252,
+                  //   ),
+                  // ),
+                ],
+              ),
             ),
           ),
           Container(
@@ -88,7 +94,7 @@ class _SqueezePageMobileState extends State<SqueezePageMobile> {
               maxLines: 2,
               overflow: TextOverflow.clip,
               style: TextStyle(
-                fontSize: 14.0,
+                fontSize: 18.0,
                 fontWeight: FontWeight.w400,
                 height: 1.5,
               ),
@@ -229,39 +235,9 @@ class _SqueezePageMobileState extends State<SqueezePageMobile> {
                     ),
                     emailSnapshot.data.error
                         ? Padding(
-                            padding: EdgeInsets.only(bottom: 5.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Center(
-                                  child: Container(
-                                    margin: EdgeInsets.only(top: 5.0),
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 10.0,
-                                      vertical: 5.0,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: Theme.of(context).errorColor,
-                                      borderRadius: BorderRadius.circular(2.0),
-                                    ),
-                                    child: Text(
-                                      "Invalid Email",
-                                      style:
-                                          Theme.of(context).textTheme.overline,
-                                    ),
-                                  ),
-                                ),
-                                CustomPaint(
-                                  painter: TrianglePainter(
-                                    strokeColor: Theme.of(context).errorColor,
-                                    paintingStyle: PaintingStyle.fill,
-                                  ),
-                                  child: Container(
-                                    height: 6.0,
-                                    width: 10.0,
-                                  ),
-                                ),
-                              ],
+                            padding: EdgeInsets.only(top: 15.0),
+                            child: ErrorAlert(
+                              errorText: "Invalid Email",
                             ),
                           )
                         : Container(),
@@ -475,7 +451,7 @@ class _SqueezePageMobileState extends State<SqueezePageMobile> {
           Testimonial(
             imagePath: "assets/sample_dog_2_2x.png",
             review:
-                "We got our box today and the dogs went wild!! I buy loads of toys but these were on a  different level, I've never seen them go so made bfore!! I look forward to getting the next one!",
+                "We got our box today and the dogs went wild!! I buy loads of toys but these were on a  different level, I've never seen them go so mad for them!! I look forward to getting the next one!",
             name: "Rachel B.",
           ),
           Testimonial(

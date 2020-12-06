@@ -28,8 +28,7 @@ class CheckOutBloc extends BlocBase {
   void onInfoGiven(Customer customer, CreditCard card, Address address) {
     checkOutSink.add(
       CheckOutResponse(
-        isCustomerInfoValid:
-            customer.isNameValid() && address.isAddressInfoValid(),
+        isCustomerInfoValid: true,
         isCardValid: true,
         isValid: customer.isNameValid() &&
             DoggoCreditCard().checkCreditCardInfo(card) &&

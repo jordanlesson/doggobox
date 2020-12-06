@@ -230,39 +230,8 @@ class _SqueezePageDesktopState extends State<SqueezePageDesktop> {
                   ),
                   emailSnapshot.data.error
                       ? Padding(
-                          padding: EdgeInsets.only(bottom: 5.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Center(
-                                child: Container(
-                                  margin: EdgeInsets.only(top: 15.0),
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: 10.0,
-                                    vertical: 5.0,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: Theme.of(context).errorColor,
-                                    borderRadius: BorderRadius.circular(2.0),
-                                  ),
-                                  child: Text(
-                                    "Invalid Email",
-                                    style: Theme.of(context).textTheme.overline,
-                                  ),
-                                ),
-                              ),
-                              CustomPaint(
-                                painter: TrianglePainter(
-                                  strokeColor: Theme.of(context).errorColor,
-                                  paintingStyle: PaintingStyle.fill,
-                                ),
-                                child: Container(
-                                  height: 6.0,
-                                  width: 10.0,
-                                ),
-                              ),
-                            ],
-                          ),
+                          padding: EdgeInsets.only(top: 15.0),
+                          child: ErrorAlert(errorText: "Invalid Email"),
                         )
                       : Container(),
                 ],

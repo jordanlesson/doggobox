@@ -50,6 +50,7 @@ export 'package:doggobox/widgets/one_time_offer_cell.dart';
 export 'package:doggobox/widgets/one_time_offer_button.dart';
 export 'package:doggobox/widgets/doggo_box_claim_button.dart';
 export 'package:doggobox/widgets/footer.dart';
+export 'package:doggobox/widgets/error_alert.dart';
 
 // Providers
 export 'package:doggobox/providers/bloc_provider.dart';

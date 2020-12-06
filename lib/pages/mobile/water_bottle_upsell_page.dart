@@ -1,11 +1,9 @@
 import 'package:doggobox/index.dart';
 
 class WaterBottleUpsellPageMobile extends StatefulWidget {
-  final List<Product> cart;
   final User user;
 
   WaterBottleUpsellPageMobile({
-    @required this.cart,
     @required this.user,
   });
 
@@ -17,8 +15,7 @@ class WaterBottleUpsellPageMobile extends StatefulWidget {
 class _WaterBottleUpsellPageMobileState
     extends State<WaterBottleUpsellPageMobile> {
   VideoPlayerController _videoPlayerController;
-  ShoppingCartBloc shoppingCartBloc;
-  List<Product> cart;
+  ShoppingCartBloc _shoppingCartBloc;
 
   @override
   void initState() {
@@ -34,14 +31,13 @@ class _WaterBottleUpsellPageMobileState
     _videoPlayerController.initialize().then((_) => setState(() {}));
     _videoPlayerController.play();
 
-    shoppingCartBloc = ShoppingCartBloc();
-    cart = List<Product>.from(widget.cart);
+    _shoppingCartBloc = ShoppingCartBloc();
   }
 
   @override
   void dispose() {
     _videoPlayerController.dispose();
-    shoppingCartBloc.dispose();
+    _shoppingCartBloc.dispose();
     super.dispose();
   }
 
@@ -135,8 +131,9 @@ class _WaterBottleUpsellPageMobileState
               enabled: true,
               text: "Get the Doggo Water Bottle for only \$31.99",
               onPressed: () {
-                cart.add(ReusableDogWaterBottle());
-                _navigateToNextStep(cart);
+                _shoppingCartBloc.checkOutItem(
+                    widget.user, ReusableDogWaterBottle());
+                _navigateToNextStep();
               },
             ),
           ],
@@ -173,7 +170,7 @@ class _WaterBottleUpsellPageMobileState
             ],
           ),
         ),
-        onTap: () => _navigateToNextStep(cart),
+        onTap: () => _navigateToNextStep(),
       ),
     );
   }
@@ -222,8 +219,9 @@ class _WaterBottleUpsellPageMobileState
             enabled: true,
             text: "Yes! Send a DoggoBox to an Animal Shelter each month",
             onPressed: () {
-              cart.add(ReusableDogWaterBottle());
-              _navigateToNextStep(cart);
+              _shoppingCartBloc.checkOutItem(
+                  widget.user, ReusableDogWaterBottle());
+              _navigateToNextStep();
             },
           ),
         ),
@@ -265,8 +263,8 @@ class _WaterBottleUpsellPageMobileState
         enabled: true,
         text: "Get the Doggo Water Bottle for only \$31.99",
         onPressed: () {
-          cart.add(ReusableDogWaterBottle());
-          _navigateToNextStep(cart);
+          _shoppingCartBloc.checkOutItem(widget.user, ReusableDogWaterBottle());
+          _navigateToNextStep();
         },
       ),
     );
@@ -290,10 +288,7 @@ class _WaterBottleUpsellPageMobileState
     );
   }
 
-  void _navigateToNextStep(List<Product> cart) {
-    // Purchases everything added to cart
-    shoppingCartBloc.onFinishedShopping(widget.user, cart);
-
+  void _navigateToNextStep() {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) {
@@ -321,7 +316,7 @@ class _WaterBottleUpsellPageMobileState
         desktop: false,
       ),
       body: BlocProvider<ShoppingCartBloc>(
-        bloc: shoppingCartBloc,
+        bloc: _shoppingCartBloc,
         child: Container(
           child: ListView(
             padding: EdgeInsets.only(

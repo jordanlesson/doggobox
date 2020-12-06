@@ -190,26 +190,84 @@ class _CreditCardPageDesktopState extends State<CreditCardPageDesktop> {
   }
 
   Widget _buildCreditCardTextFields() {
-    return Container(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            padding: EdgeInsets.only(bottom: 20.0),
-            child: Text(
-              "Fill In Your Credit Card Details",
-              style: TextStyle(
-                fontSize: 18.0,
-                fontWeight: FontWeight.w600,
+    return StreamBuilder<CheckOutResponse>(
+      initialData: CheckOutResponse(
+        isCardValid: true,
+        isCustomerInfoValid: false,
+        isValid: false,
+      ),
+      stream: _checkOutBloc.checkOutStream,
+      builder: (context, snapshot) {
+        final CheckOutResponse checkOut = snapshot.data;
+        return Stack(
+          alignment: Alignment.topCenter,
+          children: [
+            Container(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    padding: EdgeInsets.only(bottom: 20.0),
+                    child: Text(
+                      "Fill In Your Credit Card Details",
+                      style: TextStyle(
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                  CreditCardTextField(
+                    onCreditCardChanged: _onCreditCardChanged,
+                    error: !checkOut.isCardValid,
+                  ),
+                ],
               ),
             ),
-          ),
-          CreditCardTextField(
-            onCreditCardChanged: _onCreditCardChanged,
-            error: false,
-          ),
-        ],
+            !checkOut.isCardValid
+                ? Container(
+                    //color: Colors.green,
+                    alignment: Alignment.topCenter,
+                    padding: EdgeInsets.only(top: 10.0),
+                    child: ErrorAlert(errorText: "Invalid Credit Card"),
+                  )
+                : Container(),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildFullNameTextField() {
+    return StreamBuilder<CheckOutResponse>(
+      initialData: CheckOutResponse(
+        isCardValid: true,
+        isCustomerInfoValid: true,
+        isValid: false,
       ),
+      stream: _checkOutBloc.checkOutStream,
+      builder:
+          (BuildContext context, AsyncSnapshot<CheckOutResponse> snapshot) {
+        CheckOutResponse checkOut = snapshot.data;
+        return Stack(
+          children: [
+            InfoTextField(
+              label: "Full Name",
+              hintText: "Simba Doggo",
+              keyboardType: TextInputType.name,
+              onChanged: _onNameChanged,
+              autofillHints: [AutofillHints.name],
+            ),
+            !checkOut.isCustomerInfoValid
+                ? Container(
+                    //color: Colors.green,
+                    alignment: Alignment.topCenter,
+                    padding: EdgeInsets.only(top: 25.0),
+                    child: ErrorAlert(errorText: "Incomplete Address"),
+                  )
+                : Container(),
+          ],
+        );
+      },
     );
   }
 
@@ -346,7 +404,7 @@ class _CreditCardPageDesktopState extends State<CreditCardPageDesktop> {
       bloc: _checkOutBloc,
       child: StreamBuilder<CheckOutResponse>(
         initialData: CheckOutResponse(
-          isCardValid: false,
+          isCardValid: true,
           isCustomerInfoValid: false,
           isValid: false,
         ),
@@ -363,15 +421,12 @@ class _CreditCardPageDesktopState extends State<CreditCardPageDesktop> {
               final FirestoreResponse response = transactionSnapshot.data;
               print(response.message);
               return DoggoButton(
-                enabled: checkOut.isValid && response.message != "loading",
-                text: "⚡️Claim Your DoggoBox Now⚡️",
+                enabled: response.message != "loading",
+                text: response.message != "loading"
+                    ? "⚡️Claim Your DoggoBox Now⚡️"
+                    : "Claiming Doggo Box...",
                 onPressed: () => _checkOutBloc.onDoggoBoxPurchased(
-                  context,
-                  widget.user,
-                  _customer,
-                  _card,
-                  _address,
-                ),
+                    context, widget.user, _customer, _card, _address),
               );
             },
           );
@@ -512,6 +567,7 @@ class _CreditCardPageDesktopState extends State<CreditCardPageDesktop> {
                         children: [
                           _buildApplePayButton(context),
                           _buildCreditCardTextFields(),
+                          _buildFullNameTextField(),
                           InfoTextField(
                             label: "Full Name",
                             hintText: "Simba Doggo",

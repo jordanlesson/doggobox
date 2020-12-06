@@ -1,11 +1,9 @@
 import 'package:doggobox/index.dart';
 
 class AnimalShelterUpsellPageDesktop extends StatefulWidget {
-  final List<Product> cart;
   final User user;
 
   AnimalShelterUpsellPageDesktop({
-    @required this.cart,
     @required this.user,
   });
 
@@ -16,12 +14,18 @@ class AnimalShelterUpsellPageDesktop extends StatefulWidget {
 
 class _AnimalShelterUpsellPageDesktopState
     extends State<AnimalShelterUpsellPageDesktop> {
-  List<Product> cart;
+  ShoppingCartBloc _shoppingCartBloc;
 
   @override
   void initState() {
     super.initState();
-    cart = List<Product>.from(widget.cart);
+    _shoppingCartBloc = ShoppingCartBloc();
+  }
+
+  @override
+  void dispose() {
+    _shoppingCartBloc.dispose();
+    super.dispose();
   }
 
   Widget _buildStepCounter() {
@@ -128,7 +132,8 @@ class _AnimalShelterUpsellPageDesktopState
                   "Yes! Send a DoggoBox to an Animal Shelter each month ",
               desktop: true,
               onButtonPressed: () {
-                cart.add(AnimalShelterDoggoBox());
+                _shoppingCartBloc.checkOutItem(
+                    widget.user, AnimalShelterDoggoBox());
                 _navigateToNextStep();
               },
             ),
@@ -233,11 +238,9 @@ class _AnimalShelterUpsellPageDesktopState
             },
             child: ViewController(
               mobilePage: WaterBottleUpsellPageMobile(
-                cart: cart,
                 user: widget.user,
               ),
               desktopPage: WaterBottleUpsellPageDesktop(
-                cart: cart,
                 user: widget.user,
               ),
             ),

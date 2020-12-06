@@ -1,11 +1,9 @@
 import 'package:doggobox/index.dart';
 
 class AnimalShelterUpsellPageMobile extends StatefulWidget {
-  final List<Product> cart;
   final User user;
 
   AnimalShelterUpsellPageMobile({
-    @required this.cart,
     @required this.user,
   });
 
@@ -16,12 +14,18 @@ class AnimalShelterUpsellPageMobile extends StatefulWidget {
 
 class _AnimalShelterUpsellPageMobileState
     extends State<AnimalShelterUpsellPageMobile> {
-  List<Product> cart;
+  ShoppingCartBloc _shoppingCartBloc;
 
   @override
   void initState() {
     super.initState();
-    cart = List<Product>.from(widget.cart);
+    _shoppingCartBloc = ShoppingCartBloc();
+  }
+
+  @override
+  void dispose() {
+    _shoppingCartBloc.dispose();
+    super.dispose();
   }
 
   Widget _buildOffer() {
@@ -103,7 +107,8 @@ class _AnimalShelterUpsellPageMobileState
                   "Yes! Send a DoggoBox to an Animal Shelter each month ",
               desktop: false,
               onButtonPressed: () {
-                cart.add(AnimalShelterDoggoBox());
+                _shoppingCartBloc.checkOutItem(
+                    widget.user, AnimalShelterDoggoBox());
                 _navigateToNextStep();
               },
             ),
@@ -227,7 +232,8 @@ class _AnimalShelterUpsellPageMobileState
                   enabled: true,
                   text: "Yes! Send a DoggoBox to an Animal Shelter each month",
                   onPressed: () {
-                    cart.add(AnimalShelterDoggoBox());
+                    _shoppingCartBloc.checkOutItem(
+                        widget.user, AnimalShelterDoggoBox());
                     _navigateToNextStep();
                   },
                 ),
@@ -278,11 +284,9 @@ class _AnimalShelterUpsellPageMobileState
             },
             child: ViewController(
               mobilePage: WaterBottleUpsellPageMobile(
-                cart: cart,
                 user: widget.user,
               ),
               desktopPage: WaterBottleUpsellPageDesktop(
-                cart: cart,
                 user: widget.user,
               ),
             ),
