@@ -1,4 +1,5 @@
 import 'package:doggobox/index.dart';
+import 'package:flutter/cupertino.dart';
 
 class DoggoButton extends StatefulWidget {
   final bool enabled;
@@ -50,17 +51,39 @@ class _DoggoButtonState extends State<DoggoButton> {
               ),
             ],
           ),
-          child: widget.loading
-              ? _buildLoading()
-              : Text(
-                  widget.text,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 17.0,
-                    fontWeight: FontWeight.bold,
-                  ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                width: 15.0,
+                height: 15.0,
+                margin: EdgeInsets.only(left: 5.0),
+              ),
+              Text(
+                widget.text,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 17.0,
+                  fontWeight: FontWeight.bold,
                 ),
+              ),
+              widget.loading
+                  ? Container(
+                      width: 15.0,
+                      height: 15.0,
+                      margin: EdgeInsets.only(left: 5.0),
+                      child: CircularProgressIndicator(
+                        backgroundColor: Colors.white,
+                      ),
+                    )
+                  : Container(
+                      width: 15.0,
+                      margin: EdgeInsets.only(left: 5.0),
+                    ),
+            ],
+          ),
         ),
       ),
       onTap: widget.enabled ? widget.onPressed : null,

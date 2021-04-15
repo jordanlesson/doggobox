@@ -422,7 +422,8 @@ class _CreditCardPageMobileState extends State<CreditCardPageMobile> {
                 enabled: response.message != "loading",
                 text: response.message != "loading"
                     ? "⚡️Claim Your DoggoBox Now⚡️"
-                    : "Claiming Doggo Box...",
+                    : "Claiming DoggoBox...",
+                loading: response.message == "loading",
                 onPressed: () => _checkOutBloc.onDoggoBoxPurchased(
                     context, widget.user, _customer, _card, _address),
               );
@@ -509,7 +510,7 @@ class _CreditCardPageMobileState extends State<CreditCardPageMobile> {
             child: Column(
               children: [
                 _buildOffer(),
-                _buildApplePayButton(context),
+                // _buildApplePayButton(context),
                 _buildCreditCardTextFields(),
                 _buildFullNameTextField(),
                 InfoTextField(

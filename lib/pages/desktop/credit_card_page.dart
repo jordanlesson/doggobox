@@ -424,7 +424,8 @@ class _CreditCardPageDesktopState extends State<CreditCardPageDesktop> {
                 enabled: response.message != "loading",
                 text: response.message != "loading"
                     ? "⚡️Claim Your DoggoBox Now⚡️"
-                    : "Claiming Doggo Box...",
+                    : "Claiming DoggoBox...",
+                loading: response.message == "loading",
                 onPressed: () => _checkOutBloc.onDoggoBoxPurchased(
                     context, widget.user, _customer, _card, _address),
               );
@@ -565,16 +566,9 @@ class _CreditCardPageDesktopState extends State<CreditCardPageDesktop> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          _buildApplePayButton(context),
+                          // _buildApplePayButton(context),
                           _buildCreditCardTextFields(),
                           _buildFullNameTextField(),
-                          InfoTextField(
-                            label: "Full Name",
-                            hintText: "Simba Doggo",
-                            keyboardType: TextInputType.name,
-                            onChanged: _onNameChanged,
-                            autofillHints: [AutofillHints.name],
-                          ),
                           InfoTextField(
                             label: "Address",
                             hintText: "150 Berry St. Apt 23",

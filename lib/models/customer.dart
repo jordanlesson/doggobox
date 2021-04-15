@@ -27,3 +27,4 @@ class Customer {
     return name != null && name.length >= 2;
   }
 }
+

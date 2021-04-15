@@ -16,6 +16,7 @@ export 'package:credit_card_number_validator/credit_card_number_validator.dart';
 export 'package:firebase_auth/firebase_auth.dart';
 export 'package:url_launcher/url_launcher.dart';
 export 'package:flutter_email_sender/flutter_email_sender.dart';
+export 'package:mailto/mailto.dart';
 
 // Blocs
 export 'package:doggobox/blocs/email_bloc.dart';

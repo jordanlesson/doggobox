@@ -103,8 +103,13 @@ class CheckOutBloc extends BlocBase {
                       onWillPop: () async {
                         return false;
                       },
-                      child: OneTimeOfferPageMobile(
-                        user: user,
+                      child: ViewController(
+                        mobilePage: OneTimeOfferPageMobile(
+                          user: user,
+                        ),
+                        desktopPage: OneTimeOfferPageDesktop(
+                          user: user,
+                        ),
                       ),
                     );
                   },
